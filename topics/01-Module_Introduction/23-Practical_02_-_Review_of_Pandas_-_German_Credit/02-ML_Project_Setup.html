@@ -220,7 +220,7 @@ has advantages:</p>
 <p>This is a small dataset ((1000 observations) X (20 features + 1 target)) and is available from <a href="https://archive.ics.uci.edu/ml/machine-learning-databases/statlog/german">UCL</a> in two formats, we are going to use the original format and the associated datasheet so you get more exposure in cleaning data.</p>
 <p>The outline of steps needed are:</p>
 <p><strong>Step 1:</strong> In your <code>datasets</code> folder create a folder to store all files relating to the German Credit dataset, I use <code>German_Credit</code>.</p>
-<p><strong>Step 2:</strong>  Create a new notebook, called <code>German_Credit_-_01_-_Import.ipynb</code> and create a cell with following contents (list of standard imports and settings)</p>
+<p><strong>Step 2:</strong>  <strong>Inside the, just created folder, <code>German_Credit</code></strong> create a new notebook, called <code>German_Credit_-_01_-_Import.ipynb</code> and create a cell with following contents (list of standard imports and settings)</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -237,7 +237,8 @@ has advantages:</p>
 <span class="normal">14</span>
 <span class="normal">15</span>
 <span class="normal">16</span>
-<span class="normal">17</span></pre></div></td><td class="code"><div><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
@@ -246,7 +247,7 @@ has advantages:</p>
 
 <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_rows&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="c1"># pd.set_option(&#39;display.max_rows&#39;, None)</span>
 
 <span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s2">&quot;darkgrid&quot;</span><span class="p">)</span>
 
@@ -254,6 +255,7 @@ has advantages:</p>
 <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span> 
 
 <span class="n">DEBUG</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">SEED</span> <span class="o">=</span> <span class="mi">666</span>
 </pre></div></td></tr></table></div>
 
 

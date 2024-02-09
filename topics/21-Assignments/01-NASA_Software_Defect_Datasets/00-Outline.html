@@ -183,21 +183,23 @@ The datasets are overlapping in the sense that many cases appear in multiple dat
 <p>The number of cases is small (especially after cleaning) so you will need to relay on cross validation scoring rather than train/validation/test split. In fact, I would probably not do a train/test split at all.</p>
 </li>
 <li>
-<p>The dataset is imbalanced and in addition to the low number of cases we need to be careful whenever preforming a test/train or CV split and will need to apply imbalanced techniques (You could try think SMOTE). </p>
+<p>The dataset is imbalanced and in addition to the low number of cases we need to be careful whenever preforming a test/train or CV split and will need to apply imbalanced techniques (You could try SMOTE). </p>
 </li>
 <li>
 <p>Accuracy is a uninformative measure of success for a defect detector, because two detectors with the similar accuracy can have widely varying True Positive and False Positive rates. Hence we will use PR AUC as our metric.
- A good article on the PR AUC metric (and more) is <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4349800/pdf/pone.0118432.pdf">The Precision-Recall Plot Is More Informative than the ROC Plot When Evaluating Binary Classifiers on Imbalanced Datasets</a></p>
+ A good article on the PR AUC metric (and more) is <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4349800/pdf/pone.0118432.pdf">The Precision-Recall Plot Is More Informative than the ROC Plot When Evaluating Binary Classifiers on Imbalanced Datasets</a> or see Median article 
+ <a href="https://medium.com/@douglaspsteen/precision-recall-curves-d32e5b290248">Precision-Recall Curves</a> and 
+ sklearn's <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_curve.html">sklearn.metrics.precision_recall_curve</a>.</p>
 </li>
 <li>
-<p>Feature importance is relevant, so you should be able to make some comments on which features are important, and their relative importance etc.</p>
+<p>Feature importance is relevant here as we want to know what impacts code quality. So you should be able to make some comments on which features are important, and their relative importance etc.</p>
 </li>
 </ul>
 <h2>Submission</h2>
 <p>Upload the following notebooks (and additional python scripts if used):</p>
 <ul>
 <li>
-<p><code>01-Clean.ipynb</code> <br/></p>
+<p><code>NASA_Defects_-_01_-_Clean.ipynb</code> <br/></p>
 <ul>
 <li>Reads in dataset from subfolder <code>orig/jm1.csv</code>.</li>
 <li>Generates a report describing both the number of features and the number of cases with issues. (Issues described in <a href="#paper">[1]</a>.) </li>
@@ -205,7 +207,7 @@ The datasets are overlapping in the sense that many cases appear in multiple dat
 </ul>
 </li>
 <li>
-<p><code>02-Model.ipynb</code> <br/>   </p>
+<p><code>NASA_Defects_-_02_-_Model.ipynb</code> <br/>  </p>
 </li>
 <li>Reads in cleaned dataset from <code>data/jm1.csv</code>.</li>
 <li>Performs feature engineering, model selection and optimisation.</li>
@@ -214,7 +216,11 @@ The datasets are overlapping in the sense that many cases appear in multiple dat
 <p><strong>Don't compress or archive the notebooks.</strong> Your files will be placed in the root folder with our typical ML project setup, in which you can assume has the original dataset as follows:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span>NASA_Defects
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span>NASA_Defects
+├── NASA_Defects_-_01_-_Clean.ipynb   &lt;-- your file
+├── NASA_Defects_-_02_-_Model.ipynb   &lt;-- your file
 └── orig
     └── jm1.csv
 </pre></div></td></tr></table></div>

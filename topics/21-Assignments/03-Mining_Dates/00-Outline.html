@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Data Mining 2</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../../style/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../../../style/codehilite/css/default.css" rel="stylesheet">
+    <link href="../../../style/misc/css/module.css" rel="stylesheet">
+    <link href="../../../style/misc/css/practical.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+	<script type="text/javascript"
+	  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script>
+
+  </head>
+
+<body>
+
+	<!-- Fixed navbar -->
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			
+			
+	    	<div class="collapse navbar-collapse">
+
+				<ul class="nav navbar-nav navbar-left">
+					<!-- Moodle -->
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="https://moodle.wit.ie/course/view.php?id=199957" target="_blank"><img height="18pt" src="../../../style/misc/img/moodle_logo_on_blue.gif" /></a>
+						</div>						
+					</li>
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="https://moodle.wit.ie/course/view.php?id=199957" target="_blank"><img height="18pt" src="../../../style/misc/img/slack_logo.png" /></a>
+						</div>						
+					</li>
+				</ul>
+
+	      		<ul class="nav navbar-nav navbar-right">
+
+					<!-- module home -->
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="../../../index.html"><span class="glyphicon glyphicon-home"></span></a>
+						</div>						
+					</li>
+					
+					<!-- topics -->
+	        		<li>
+						<div class="navbar-collapse collapse" id="b">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-list-alt"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li class="dropdown-header">Topics</li>
+										
+										<li >
+											<a href="../../../topics/01-Module_Introduction/index.html">Module Introduction</a>
+										</li>
+										
+										<li >
+											<a href="../../../topics/02-Feature_Engineering/index.html">Feature Engineering</a>
+										</li>
+										
+										<li >
+											<a href="../../../topics/03-Review_of_Model_Building/index.html">Review of Model Building</a>
+										</li>
+										
+										<li >
+											<a href="../../../topics/04-Hyperparameter_Tuning/index.html">Hyperparameter Tuning</a>
+										</li>
+										
+										<li >
+											<a href="../../../topics/05-Ensemble_Learning/index.html">Ensemble Learning</a>
+										</li>
+										
+										<li >
+											<a href="../../../topics/07-Text_Mining/index.html">Text Mining</a>
+										</li>
+										
+										<li class="active">
+											<a href="../../../topics/21-Assignments/index.html">Assignments</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li>
+
+					<!-- resources -->
+	        		<li>
+						<div class="navbar-collapse collapse" id="b">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-th-list"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li class="dropdown-header">Resources</li>
+										
+										<li >
+											<a href="../../../topics/21-Assignments/index.html#01-NASA_Software_Defect_Datasets">NASA Software Defect Datasets</a>
+										</li>
+										
+										<li >
+											<a href="../../../topics/21-Assignments/index.html#02-Kaggle_Style_Competition">Kaggle Style Competition</a>
+										</li>
+										
+										<li class="active">
+											<a href="../../../topics/21-Assignments/index.html#03-Mining_Dates">Mining Dates</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li>
+								
+					<!-- pages-->
+	        		<li>
+						<div class="navbar-collapse collapse" id="c">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span>Outline</span
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										
+										<li class="active">
+											<a href="00-Outline.html">Outline</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li> 
+					
+	        	</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- contents -->
+	<div class="container">
+		
+		<ul class="pager">
+			
+			<li class="previous disabled"><a>&larr; Previous</a></li>
+			
+			
+			
+			<li class="next disabled"><a>Next &rarr;</a></li>
+			
+		</ul>
+		
+		<h1>Mining Dates</h1>
+<h2>Aim</h2>
+<p>(Don't worry this is not an analysis of the many dating sites:
+<a href="https://www.christianmingle.com/en-us">Christian Mingle</a>, <a href="http://diapermates.com">Diaper Mates</a>, or even <a href="https://www.uglyschmucks.com">Ugly Schmucks</a>).</p>
+<p>The purpose of this practical is to identify and extract dates from an unstructured dataset. Then using the mined dates reorder the entries from oldest to newest.</p>
+<h2>Task</h2>
+<p>The dataset consists of a <a href="./files/public.csv">CSV</a> file of medical notes - one note per line. Each note contains a single date but multiple conventions were used and in many cases the date is incomplete.  </p>
+<p>You need to identify the date information, extract the date and replace missing fields (day, month, year) with default values. For example, the date variations can include:</p>
+<ul>
+<li>For all numeric dates the order is month/day/year but inconsistent field separator: 04/20/2009; 04-20/09; 4/20/09; 4/3/09</li>
+<li>Inconsistent month name and separator: Mar-20-2009; Mar 20, 2009; March 20, 2009;  Mar. 20, 2009; Mar 20 2009;</li>
+<li>When month is given as a word then have inconsistent order: 20 Mar 2009; 20 March 2009; 20 Mar. 2009; 20 March, 2009</li>
+<li>Can have ordinals for day of month: Mar 20th, 2009; Mar 21st, 2009; Mar 22nd, 2009</li>
+<li>The month may be misspelt.</li>
+<li>Can have missing day field when month is given measure as a word: Feb 2009; Sep 2009; Oct 2010</li>
+<li>Can have missing day field when month is given as a number: 6/2008; 12/2009</li>
+<li>Can have missing month and day fields when year is given as 4 digits: 2009; 2010.</li>
+</ul>
+<p>In terms of fixing incorrect/incomplete dates you should:</p>
+<ul>
+<li>Assume all dates where year is encoded using only two digits are years from the 1920 to 2019 inclusive.</li>
+<li>If the day is missing, assume it is the first day of the month.</li>
+<li>If the day and month is missing, assume it is the first of January of that year.</li>
+</ul>
+<p>Using the above rules re-order the rows in chronological order (oldest to newest) and export to a CSV.  The CSV should have (at least) the fields:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span>Code, Raw, Day, Month, Year, Date
+</pre></div></td></tr></table></div>
+
+
+<p><strong>In the case of duplicate dates the rows should be sorted based on the <code>Raw</code> field. Hence sort using 
+</br></br>  <code>df.sort_values(by=['Date','Raw'], inplace=True)</code>
+</strong></p>
+<h3>Deliverable</h3>
+<ul>
+<li>Your Jupyter notebook, <code>01-Model.ipynb</code>
+<br/> This notebook should be executable as is, taking in the CSV file from sub-folder <code>data</code> and saves the required output file <code>results.csv</code> to sub-folder <code>output</code>.</li>
+</ul>
+<div class="pager">
+<a class="btn btn-primary btn-lg" target="_blank" href="https://moodle.wit.ie/mod/assign/view.php?id=000000" role="button">Submit using Moodle</a>
+</div>
+
+<h2>Resources</h2>
+<ul>
+<li><a href="./files/public.csv">Input data file</a>,
+ a CSV with two fields (Code,Raw) storing the records, one per line.</li>
+</ul>
+<h2>Grading</h2>
+<p>To evaluate your data mining, the output of your code when applied to <strong>two datasets</strong> will be compared against the correct order. In other words "How close does your order match the expected order?". This measure is called a ranked correlation and if you are interested see <a href="https://en.wikipedia.org/wiki/Kendall_rank_correlation_coefficient">Kendall's tau</a> for details.</p>
+<p>Two datasets will be used to avoid temptations of reverse engineering the correct order. You will only have access to one of these datasets, but the second dataset was generated by the same deranged mind so will have very similar structure.</p>
+<p>The following is my initial estimate of how various component of the assessment will be graded. The weights are subject to some change (±10).</p>
+<table>
+<thead>
+<tr>
+<th align="left">component</th>
+<th align="right">weight</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">quality of matching rules/processing</td>
+<td align="right">30%</td>
+</tr>
+<tr>
+<td align="left">score on public dataset</td>
+<td align="right">30%</td>
+</tr>
+<tr>
+<td align="left">score on private dataset</td>
+<td align="right">40%</td>
+</tr>
+</tbody>
+</table>
+		
+		<ul class="pager">
+			
+			<li class="previous disabled"><a>&larr; Previous</a></li>
+			
+			
+			
+			<li class="next disabled"><a>Next &rarr;</a></li>
+			
+		</ul>
+
+	</div>
+	
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="../../../style/bootstrap/js/bootstrap.min.js"></script>
+	
+  </body>
+</html>

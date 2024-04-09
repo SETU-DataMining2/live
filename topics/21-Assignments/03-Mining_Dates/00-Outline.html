@@ -205,7 +205,7 @@
 <ul>
 <li><code>Code</code> and <code>Raw</code> are the original values.</li>
 <li><code>Day</code>, <code>Month</code>, <code>Year</code> are the computed values (or zero if not computed).</li>
-<li><code>Date</code> is the date, stored as a string in format <code>dd/mm/yyyy</code> (or NA if not computed).</li>
+<li><code>Date</code> is the date, stored as a string in format <code>dd/mm/yyyy</code> (i.e. zero padded values) (or NA if not computed).</li>
 </ul>
 <p><strong>In the case of duplicate dates the rows should be sorted based on the <code>Raw</code> field. Hence sort using 
 </br></br>  <code>df.sort_values(by=['Date','Raw'], inplace=True)</code>

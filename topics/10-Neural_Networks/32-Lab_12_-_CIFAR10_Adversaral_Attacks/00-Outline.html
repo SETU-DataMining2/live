@@ -187,6 +187,15 @@
 		<h1>CIFAR10 and Adversaral Attacks</h1>
 <h2>Aim</h2>
 <p>We will finish the semester with a light task. We are going to build a small CNN to classify images from the CIFAR10 dataset and then see how easy it is to  construct (near identical) images that our model has difficulty in classifying.</p>
+<p>This is an example of an <strong>adversarial attacks</strong> &mdash; where specialised inputs are created with the purpose of confusing a neural network, resulting in a misclassification. </p>
+<p>The attacks are based on taking valid inputs and applying changes that while are indistinguishable to the human eye cause the network to fail to identify the contents of the image. There are several types of such attacks, however, here the focus is on the fast gradient sign method (FGSM) attack, which is a <strong>white box</strong> attack whose goal is to ensure misclassification. </p>
+<p>A white box attack is where the attacker has complete access to the model being attacked. One of the most famous examples of an adversarial image shown below is taken from the "Explaining and Harnessing Adversarial Examples" by Goodfellow et al. paper.</p>
+<figure>
+<img src="files/panda_to_gibbon.png" width="100%">
+<figcaption>Panda to gibbon example (Goodfellow et al.)</figcaption>
+</figure>
+
+<p>Since this is the last practical of the semester we are going light on the theory and just exploring the FGSM attack.  Also, to cut down on training time we will use the smaller CIFAR10 dataset, but you might want to do this week's lab using colab and turn select the <code>T4 GPU</code> option.</p>
 <h2>Imports and Setup</h2>
 <p>First import our standard python modules for data mining. Module <code>tqdm</code> is used to generate progress bars.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
@@ -194,13 +203,11 @@
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
-<span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
 
-<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 </pre></div></td></tr></table></div>
 
@@ -209,10 +216,8 @@
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
-<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">Sequential</span>
-<span class="kn">from</span> <span class="nn">tensorflow.keras.callbacks</span> <span class="kn">import</span> <span class="n">LambdaCallback</span> 
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow</span> <span class="kn">import</span> <span class="n">keras</span>
 <span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">layers</span>
 <span class="kn">from</span> <span class="nn">tensorflow.keras.datasets</span> <span class="kn">import</span> <span class="n">mnist</span><span class="p">,</span> <span class="n">cifar10</span>
 </pre></div></td></tr></table></div>
@@ -232,7 +237,7 @@
 
 
 <p>So we have split the 60,000 observations into 50,000 for training and 10,000 for testing.  Each of the observations consists of a 32z32 pixel x 3 channel image. Each channel is a single integer in range 0..255.</p>
-<p>Note that the output is different shape to that used in the MNIST dataset.</p>
+<p>Note that the output, <code>y_train</code> and <code>y_test</code>, is a different shape to that in the MNIST dataset.</p>
 <p>To simplify things later we define the following:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
@@ -310,12 +315,12 @@ x_train shape: (50000, 32, 32, 3)
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><span class="c1"># convert class vectors to binary class matrices</span>
-<span class="n">y_train</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_categorical</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">nb_classes</span><span class="p">)</span>
-<span class="n">y_test</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_categorical</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">nb_classes</span><span class="p">)</span>
+<span class="n">y_train</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_categorical</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">nb_classes</span><span class="p">)</span>
+<span class="n">y_test</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_categorical</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">nb_classes</span><span class="p">)</span>
 </pre></div></td></tr></table></div>
 
 
-<h2>Build Simple CNN¶</h2>
+<h2>Build a Simple CNN</h2>
 <p>Next we build a simple CNN. We write</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
@@ -346,7 +351,7 @@ x_train shape: (50000, 32, 32, 3)
 <span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
-<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
 
 <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">channels</span><span class="p">)))</span>
 
@@ -471,6 +476,44 @@ x_train shape: (50000, 32, 32, 3)
 
 
 <p>and</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><span class="c1"># plotting accuracy</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;accuracy&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_accuracy&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;val_accuracy&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div></td></tr></table></div>
+
+
+<p>which should generate graphs similar to the following</p>
+<figure>
+<img src="files/loss.png" width="45%">
+<img src="files/accuracy.png" width="45%">
+<figcaption>Model loss and accuracy. </figcaption>
+</figure>
+
+<h2>Adversarial Attacks</h2>
+<p>Now we want to see about building images (near identical to original) but the model will miss-classify.</p>
+<h3>Fast gradient sign method</h3>
+<p>The fast gradient sign method works by using the gradients of the neural network to create an adversarial example. For an input image, the method uses the gradients of the loss with respect to the input image to create a new image that maximises the loss. This new image is called the adversarial image. This can be summarised using the following expression:</p>
+<p>\[
+  x_\text{attack} = x + \epsilon \times \text{sign}
+    \left(\nabla_x J(\theta,x,y)\right)
+\]</p>
+<p>where</p>
+<ul>
+<li>\(x_\text{attack}\) is desired adversarial image,</li>
+<li>\(x\) is original input image,</li>
+<li>\(y\) is riginal input label,</li>
+<li>\(\epsilon\) a multiplier to ensure the perturbations are small.</li>
+<li>\(\theta\) are the model parameters, and</li>
+<li>\(J\) is the loss function.</li>
+</ul>
+<p>An intriguing property here, is the fact that the gradients are taken with respect to the input image. This is done because the objective is to create an image that maximises the loss. A method to accomplish this is to find how much each pixel in the image contributes to the loss value, and add a perturbation accordingly. This works pretty fast because it is easy to find how each input pixel contributes to the loss by using the chain rule and finding the required gradients. Hence, the gradients are taken with respect to the image. In addition, since the model is no longer being trained (thus the gradient is not taken with respect to the trainable variables, i.e., the model parameters), and so the model parameters remain constant. The only goal is to fool an already trained model.</p>
+<p>The first step is to create perturbations which will be used to distort an original image resulting in an adversarial image. As mentioned above, for this task, the gradients are taken with respect to the image.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -485,44 +528,7 @@ x_train shape: (50000, 32, 32, 3)
 <span class="normal">12</span>
 <span class="normal">13</span>
 <span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span></pre></div></td><td class="code"><div><pre><span></span><span class="c1"># plotting accuracy</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;accuracy&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_accuracy&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;val_accuracy&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span><span class="err">```</span>
-
-<span class="n">which</span> <span class="n">should</span> <span class="n">generate</span> <span class="n">graphs</span> <span class="n">similar</span> <span class="n">to</span> <span class="n">the</span> <span class="n">following</span>
-
-<span class="o">&lt;</span><span class="n">figure</span><span class="o">&gt;</span>
-<span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;files/loss.png&quot;</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;50%&quot;</span><span class="o">&gt;</span>
-<span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;files/accuracy.png&quot;</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;50%&quot;</span><span class="o">&gt;</span>
-<span class="o">&lt;</span><span class="n">figcaption</span><span class="o">&gt;</span><span class="n">Model</span> <span class="n">loss</span> <span class="ow">and</span> <span class="n">accuracy</span><span class="o">.</span> <span class="o">&lt;/</span><span class="n">figcaption</span><span class="o">&gt;</span>
-<span class="o">&lt;/</span><span class="n">figure</span><span class="o">&gt;</span>
-
-<span class="c1">## Adversarial Attacks</span>
-
-<span class="n">Now</span> <span class="n">we</span> <span class="n">want</span> <span class="n">to</span> <span class="n">see</span> <span class="n">about</span> <span class="n">building</span> <span class="n">images</span> <span class="p">(</span><span class="n">near</span> <span class="n">identical</span> <span class="n">to</span> <span class="n">original</span><span class="p">)</span> <span class="n">but</span> <span class="n">the</span> <span class="n">model</span> <span class="n">will</span> <span class="n">miss</span><span class="o">-</span><span class="n">classify</span><span class="o">.</span>
-
-
-<span class="err">```</span><span class="n">python</span>
-<span class="k">def</span> <span class="nf">generate_adversary</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><span class="k">def</span> <span class="nf">generate_adversary</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
   <span class="n">image</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
   <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>
@@ -530,7 +536,10 @@ x_train shape: (50000, 32, 32, 3)
     <span class="n">prediction</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
     <span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">MSE</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">prediction</span><span class="p">)</span>
 
+  <span class="c1"># compute gradients of the loss w.r.t to the input image.</span>
   <span class="n">gradient</span> <span class="o">=</span> <span class="n">tape</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span>
+
+  <span class="c1"># only sign of the gradients is used to create the perturbation</span>
   <span class="n">sign_grad</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">gradient</span><span class="p">)</span>
 
   <span class="k">return</span> <span class="n">sign_grad</span>
@@ -538,7 +547,7 @@ x_train shape: (50000, 32, 32, 3)
 
 
 <h3>Adversarial attacks - single image</h3>
-<p>Selecting random image for testing</p>
+<p>Selecting a random image for testing</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -548,7 +557,11 @@ x_train shape: (50000, 32, 32, 3)
 <span class="normal"> 7</span>
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
-<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><span class="n">rand_idx</span> <span class="o">=</span> <span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">49999</span><span class="p">)</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">72</span><span class="p">)</span>
+
+<span class="n">rand_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">49999</span><span class="p">)</span>
 <span class="n">image</span> <span class="o">=</span> <span class="n">x_train</span><span class="p">[</span><span class="n">rand_idx</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">channels</span><span class="p">))</span>
 <span class="n">label</span> <span class="o">=</span> <span class="n">y_train</span><span class="p">[</span><span class="n">rand_idx</span><span class="p">]</span>
 
@@ -566,22 +579,42 @@ x_train shape: (50000, 32, 32, 3)
 <span class="normal">2</span>
 <span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><span class="n">perturbations</span> <span class="o">=</span> <span class="n">generate_adversary</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="n">label</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
 
-<span class="n">adversarial</span> <span class="o">=</span> <span class="n">image</span> <span class="o">+</span> <span class="p">(</span><span class="n">perturbations</span> <span class="o">*</span> <span class="mf">0.05</span><span class="p">)</span>
+<span class="n">adversarial</span> <span class="o">=</span> <span class="p">(</span><span class="n">image</span> <span class="o">+</span> <span class="p">(</span><span class="n">perturbations</span> <span class="o">*</span> <span class="mf">0.03</span><span class="p">))</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 </pre></div></td></tr></table></div>
 
 
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span>
-<span class="normal">7</span>
-<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span><span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">height</span><span class="p">,</span><span class="n">width</span><span class="p">,</span> <span class="n">channels</span><span class="p">))</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Original Image&quot;</span><span class="p">)</span>
-<span class="n">ax2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">adversarial</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">height</span><span class="p">,</span><span class="n">width</span><span class="p">,</span> <span class="n">channels</span><span class="p">))</span>
-<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Image with Adversary&quot;</span><span class="p">)</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><span class="c1"># Comparing both images </span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">height</span><span class="p">,</span><span class="n">width</span><span class="p">,</span> <span class="n">channels</span><span class="p">))</span>
+<span class="n">orig_label</span> <span class="o">=</span> <span class="n">label_names</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">label</span><span class="o">==</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+<span class="n">orig_predict</span> <span class="o">=</span> <span class="n">label_names</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="o">.</span><span class="n">argmax</span><span class="p">()]</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original</span><span class="se">\n</span><span class="s2">(</span><span class="si">{</span><span class="n">orig_label</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">orig_predict</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(((</span><span class="n">perturbations</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">height</span><span class="p">,</span><span class="n">width</span><span class="p">,</span> <span class="n">channels</span><span class="p">))</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Perturbation</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">attack_predict</span> <span class="o">=</span> <span class="n">label_names</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">adversarial</span><span class="p">)</span><span class="o">.</span><span class="n">argmax</span><span class="p">()]</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">adversarial</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">height</span><span class="p">,</span><span class="n">width</span><span class="p">,</span> <span class="n">channels</span><span class="p">))</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Adversary</span><span class="se">\n</span><span class="s2">(</span><span class="si">{</span><span class="n">attack_predict</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;Original_and_Adversary.png&quot;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -600,6 +633,18 @@ x_train shape: (50000, 32, 32, 3)
 </pre></div></td></tr></table></div>
 
 
+<p>which generates</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span>1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 14ms/step
+Normal Image Prediction: automobile
+1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 10ms/step
+Adversary Prediction: truck
+</pre></div></td></tr></table></div>
+
+
+<p>Note the effect if different values of epsilon.  You'll notice that as the value of epsilon is increased, it becomes easier to fool the network. However, this comes as a trade-off which results in the perturbations becoming more identifiable.</p>
 <h3>Adversarial attacks - adversarial versions of train</h3>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
@@ -634,7 +679,7 @@ x_train shape: (50000, 32, 32, 3)
       <span class="n">image</span> <span class="o">=</span> <span class="n">x_train</span><span class="p">[</span><span class="n">N</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">channels</span><span class="p">))</span>
 
       <span class="n">perturbations</span> <span class="o">=</span> <span class="n">generate_adversary</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-      <span class="n">adversarial</span> <span class="o">=</span> <span class="n">image</span> <span class="o">+</span> <span class="p">(</span><span class="n">perturbations</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">)</span>
+      <span class="n">adversarial</span> <span class="o">=</span> <span class="n">image</span> <span class="o">+</span> <span class="p">(</span><span class="n">perturbations</span> <span class="o">*</span> <span class="mf">0.03</span><span class="p">)</span>
 
       <span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">adversarial</span><span class="p">)</span>
       <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>

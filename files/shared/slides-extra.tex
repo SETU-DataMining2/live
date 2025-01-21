@@ -1,0 +1,232 @@
+\usepackage{relsize}
+
+% http://tex.stackexchange.com/questions/66164/beamer-tableofcontents-with-page-numbers
+\makeatletter
+
+\newcounter{sectionpage}
+
+\makeatletter
+\long\def\beamer@section[#1]#2{%
+  \beamer@savemode%
+  \mode<all>%
+  \ifbeamer@inlecture
+    \refstepcounter{section}%
+    \beamer@ifempty{#2}%
+    {\long\def\secname{#1}\long\def\lastsection{#1}}%
+    {\global\advance\beamer@tocsectionnumber by 1\relax%
+      \long\def\secname{#2}%
+      \long\def\lastsection{#1}%
+    \setcounter{sectionpage}{\insertframenumber}\stepcounter{sectionpage}%
+      \addtocontents{toc}{\protect\beamer@sectionintoc{\the\c@section}{#2\hfill\thesectionpage}{\the\c@page}{\the\c@part}%
+        {\the\beamer@tocsectionnumber}}}%
+    {\let\\=\relax\xdef\sectionlink{{Navigation\the\c@page}{\noexpand\secname}}}%
+    \beamer@tempcount=\c@page\advance\beamer@tempcount by -1%
+    \beamer@ifempty{#1}{}{%
+      \addtocontents{nav}{\protect\headcommand{\protect\sectionentry{\the\c@section}{#1}{\the\c@page}{\secname}{\the\c@part}}}%
+      \addtocontents{nav}{\protect\headcommand{\protect\beamer@sectionpages{\the\beamer@sectionstartpage}{\the\beamer@tempcount}}}%
+      \addtocontents{nav}{\protect\headcommand{\protect\beamer@subsectionpages{\the\beamer@subsectionstartpage}{\the\beamer@tempcount}}}%
+    }%
+    \beamer@sectionstartpage=\c@page%
+    \beamer@subsectionstartpage=\c@page%
+    \def\insertsection{\expandafter\hyperlink\sectionlink}%
+    \def\insertsubsection{}%
+    \def\insertsubsubsection{}%
+    \def\insertsectionhead{\hyperlink{Navigation\the\c@page}{#1}}%
+    \def\insertsubsectionhead{}%
+    \def\insertsubsubsectionhead{}%
+    \def\lastsubsection{}%
+    \Hy@writebookmark{\the\c@section}{\secname}{Outline\the\c@part.\the\c@section}{2}{toc}%
+    \hyper@anchorstart{Outline\the\c@part.\the\c@section}\hyper@anchorend%
+    \beamer@ifempty{#2}{\beamer@atbeginsections}{\beamer@atbeginsection}%
+  \fi%
+  \beamer@resumemode}%
+
+\def\beamer@subsection[#1]#2{%
+  \beamer@savemode%
+  \mode<all>%
+  \ifbeamer@inlecture%
+    \refstepcounter{subsection}%
+    \beamer@ifempty{#2}{\long\def\subsecname{#1}\long\def\lastsubsection{#1}}
+    {%
+      \long\def\subsecname{#2}%
+      \long\def\lastsubsection{#1}%
+    \setcounter{sectionpage}{\insertframenumber}\stepcounter{sectionpage}%
+      \addtocontents{toc}{\protect\beamer@subsectionintoc{\the\c@section}{\the\c@subsection}{#2 \hfill\thesectionpage}{\the\c@page}{\the\c@part}{\the\beamer@tocsectionnumber}}%
+    }%
+    \beamer@tempcount=\c@page\advance\beamer@tempcount by -1%
+    \addtocontents{nav}{%
+ %     \protect\headcommand{\protect\beamer@subsectionentry{\the\c@part}{\the\c@section}{\the\c@subsection}{\the\c@page}{\lastsubsection}}%
+      \protect\headcommand{\protect\beamer@subsectionentry{\the\c@part}{\the\c@section}{\the\c@subsection}{\the\c@page}{\lastsubsection }}%
+      \protect\headcommand{\protect\beamer@subsectionpages{\the\beamer@subsectionstartpage}{\the\beamer@tempcount}}%
+    }%
+    \beamer@subsectionstartpage=\c@page%
+    \edef\subsectionlink{{Navigation\the\c@page}{\noexpand\subsecname}}%
+    \def\insertsubsection{\expandafter\hyperlink\subsectionlink}%
+    \def\insertsubsubsection{}%
+    \def\insertsubsectionhead{\hyperlink{Navigation\the\c@page}{#1}}%
+    \def\insertsubsubsectionhead{}%
+    \Hy@writebookmark{\the\c@subsection}{#2}{Outline\the\c@part.\the\c@section.\the\c@subsection.\the\c@page}{3}{toc}%
+    \hyper@anchorstart{Outline\the\c@part.\the\c@section.\the\c@subsection.\the\c@page}\hyper@anchorend%
+    \beamer@ifempty{#2}{\beamer@atbeginsubsections}{\beamer@atbeginsubsection}%
+  \fi%
+  \beamer@resumemode}
+
+\def\beamer@sectionintoc#1#2#3#4#5{%
+  \ifnum\c@tocdepth>0%
+  \ifnum#4=\beamer@showpartnumber%
+  {
+  \beamer@saveanother%
+  \gdef\beamer@todo{}%
+  \beamer@slideinframe=#1\relax%
+  \expandafter\only\beamer@tocsections{\gdef\beamer@todo{%
+      \beamer@tempcount=#5\relax%
+      \advance\beamer@tempcount by\beamer@sectionadjust%
+      \edef\inserttocsectionnumber{\@arabic\beamer@tempcount}%
+      \def\inserttocsection{\hyperlink{Navigation#3}{#2}}%
+      % New macro defined here!!!
+      \def\inserttocsectionstartpage{#3}%
+	 \beamer@tocifnothide{\ifnum\c@section=#1\beamer@toc@cs\else\beamer@toc@os\fi}%
+      {
+        \ifbeamer@pausesections\pause\fi%
+        \ifx\beamer@toc@ooss\beamer@hidetext
+          \vskip1.5em
+       \else
+          \vfill
+        \fi
+        {%
+          \hbox{\vbox{%
+              \def\beamer@breakhere{\\}%
+              \beamer@tocact{\ifnum\c@section=#1\beamer@toc@cs\else\beamer@toc@os\fi}{section in toc}}}%
+         \par%
+        }%
+      }%
+    }
+  }%
+  \beamer@restoreanother%
+  }
+  \beamer@todo%
+  \fi\fi%
+}
+
+\def\subsectionintoc{}
+\long\def\beamer@subsectionintoc#1#2#3#4#5#6{%
+  \ifnum\c@tocdepth>1%
+  \ifnum#5=\beamer@showpartnumber%
+  {
+    \beamer@saveanother%
+    \gdef\beamer@todo{}%
+    \beamer@slideinframe=#1\relax%
+    \expandafter\only\beamer@tocsections{\gdef\beamer@todo{%
+      \ifbeamer@pausesubsections\pause\fi%
+      \beamer@tempcount=#6%
+      \advance\beamer@tempcount by\beamer@sectionadjust%
+      \edef\inserttocsectionnumber{\the\beamer@tempcount}%
+      \def\inserttocsubsectionnumber{#2}%
+      \def\inserttocsubsection{\hyperlink{Navigation#4}{#3}}%
+      \beamer@tocifnothide{\ifnum\c@section=#1\beamer@toc@oss\else\beamer@toc@ooss\fi}%
+      {%
+        \def\beamer@breakhere{\\}%
+        \beamer@tocact{\ifnum\c@section=#1\ifnum\c@subsection=#2\beamer@toc@css\else\beamer@toc@oss\fi\else\beamer@toc@ooss\fi}
+        {subsection in toc}%
+      }%
+    }}%
+    \beamer@restoreanother%
+  }
+  \beamer@todo%
+  \fi\fi%
+}
+
+\setbeamertemplate{section in toc}
+{\leavevmode\inserttocsectionnumber. \inserttocsection\par}
+
+\setbeamertemplate{subsection in toc}
+{\leavevmode\inserttocsectionnumber.\inserttocsubsectionnumber. \inserttocsubsection\par}
+
+
+\makeatother
+
+\def\TitleBackground{../../../files/shared/module.jpg}
+\usebackgroundtemplate{
+	\begin{tikzpicture}
+	\fill[white] (0,0) rectangle(\paperwidth,\paperheight);
+	\node at ($(.5\paperwidth,.5\paperheight)+(0,0)$) (B)
+		{\includegraphics[trim=5 0 5 0,width=.99\paperwidth,height=.95\paperheight]{\TitleBackground}};
+	\fill[white,opacity=.2] (B.north west) rectangle (B.south east);
+	\foreach \r in {.05,.1,...,1} {
+		\fill[white,opacity=.15] (B.north west) rectangle ($(B.north east)-(0,\r*\paperheight)$);
+	}
+	\end{tikzpicture}
+}
+
+\makeatletter
+\def\th@mystyle{%
+    \normalfont % body font
+    \setbeamercolor{block title example}{bg=orange,fg=white}
+    \setbeamercolor{block body example}{bg=orange!20,fg=black}
+    \def\inserttheoremblockenv{exampleblock}
+  }
+\makeatother
+\theoremstyle{mystyle}
+\newtheorem*{method}{Method}
+
+\makeatletter
+\def\th@plawstyle{%
+    \normalfont % body font
+    \setbeamercolor{block title example}{bg=yellow!50!black,fg=white}
+    \setbeamercolor{block body example}{bg=yellow!80!black!5,fg=black}
+    \def\inserttheoremblockenv{exampleblock}
+  }
+\makeatother
+\theoremstyle{plawstyle}
+\newtheorem*{plaw}{Probability Law: }
+
+\newenvironment{questionpart}
+{\begin{enumerate}}{\end{enumerate}}
+\newcommand{\tableHeading}[1]{{\bfseries\smaller{#1}}}
+
+\newcommand\irregularline[2]{%
+  let \n1 = {rand*(#1)} in
+  +(0,\n1)
+  \foreach \a in {0.1,0.2,...,#2}{
+    let \n1 = {rand*(#1)} in
+    -- +(\a,\n1)
+  } 
+}  % #1=seed, #2=length of horizontal line
+
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+
+\newcommand{\predict}[1]{\hat{#1}}
+
+\newcommand{\TPR}{\text{$\mathrm{TPR}$}}
+\newcommand{\FPR}{\text{$\mathrm{FPR}$}}
+
+\usetikzlibrary{decorations,
+decorations.pathreplacing,decorations.pathmorphing}
+
+\renewenvironment{clist}
+{\begin{list}{$\bullet$}{\setlength{\leftmargin}{6pt}}}
+{\end{list}}
+
+% postit
+\tikzstyle{postit}=[fill=yellow!50,draw,thick,
+decorate, drop shadow,
+decoration={random steps,segment length=3pt,amplitude=1pt},
+text width=4cm, font=\smaller]
+
+\tikzstyle{postitnumber}=[inner sep=2pt,fill=yellow!50,draw,circle,font={\bf\smaller[3]}]
+
+\renewcommand\postit[2][]{\tikz\node[postit,#1] {#2};}
+\renewcommand\postitat[4][]{\tikz[remember picture, overlay]\node[postit,#1] at (#2,#3) {#4};}
+
+
+\AtBeginSection[] % Do nothing for \section*
+{
+\begin{frame}<beamer>[plain,label=toc]
+\frametitle{Outline} %{\GetKey{resource/name} --- Summary}
+\tableofcontents[currentsection]
+\end{frame}
+}
+
+
+% 
+

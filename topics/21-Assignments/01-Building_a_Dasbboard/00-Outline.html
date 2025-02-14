@@ -130,109 +130,204 @@
 			
 		</ul>
 		
-		<h1>NASA Software Defect Datasets</h1>
-<h2>Outline</h2>
-<div class="card">
-  <div class="card-body">
-    <blockquote class="blockquote mb-0">
-      <p>"When a measure becomes a target, it ceases to be a good measure."</p>
-      <footer class="blockquote-footer">Goodhart's Law</footer>
-    </blockquote>
-  </div>
-</div>
-
-<p>The NASA Software Defect Datasets is a collections of overlapping datasets dealing with predicting software failure from static code metrics. 
-The datasets are overlapping in the sense that many cases appear in multiple datasets, but since all of the individual datasets suffer from various data issues there is no authoritative/reference dataset. </p>
-<p>The aim of this assignment is to take <strong>one</strong> of these datasets, clean it, and construct a classifier using the cleaned dataset.</p>
-<p><strong>The cleaning process itself is not complicated but the complexity arises from the fact that you will need to read and parse a paper that describes the required process rather than following my usual instructions (which are obviously always correct and always very clear 🙃).</strong></p>
-<h2>Details</h2>
-<p>To start you need to read the paper <a href="#paper">Data Quality: Some Comments on the NASA Software Defect Data Sets</a>
- [1] which describes the cleaning process used to standardise the multiple datasets.  We (you) will apply this process to <strong>one</strong> of the NASA Software Defect datasets and then build a classifier.</p>
-<p>The features are based on the work of <a href="#sm1">McCabe</a> and <a href="#sm1">Halstead</a>. You don't need to read those articles in order to do this assignment, but I found the development of static code metrics interesting.</p>
-<h3>Step 1: Import</h3>
-<p>Of the datasets listed in (see Table 1 of <a href="#paper">[1]</a>) we will work on the <a href="files/jm1.csv">JM1 dataset</a> which comes from the MDP Repository, so is listed as "JM1 MCP", with 10878 cases and 22 features (actually 19 features + 1 target), in the paper (see Table 1 of <a href="#paper">[1]</a>).</p>
-<h3>Step 2: Data Clean</h3>
-<p>Clean the <a href="files/jm1.csv">JM1 MCP</a> using the process described in <a href="#paper">[1]</a>.</p>
-<p>However, it should be noted that this paper, (if I'm correct) contains errors &mdash; ironically for a paper covering errors in datasets. So use its results as a guide but don't be too surprised if you get different results. </p>
-<h3>Step 3+: Model Building</h3>
-<p>The classification step should be relatively straightforward, but a few observations are worth noting:</p>
+		<h1>Building a Dashboard</h1>
+<h2>Aim</h2>
+<p>The purpose of this assignment is to build a dashboard to allow non technical users to explore a dataset.</p>
+<p>The dataset selected for this assignment, in part, because it is too large to build a useful (=well organised with appropriate visualisations/statistics to allow effective EDA) dashboard that covers the entire dataset. So you need to focus on particular aspects of the dataset.</p>
+<p>Before we discuss the dataset it is important to differentiate between Exploratory Data Analysis (EDA) and building a dashboard. Yes, in both you are trying to build a summary that represents a dataset, but in the EDA you do more analysis and interpretation of results while when building a dashboard you are developing an interface to aid others to perform an EDA. So in building a dashboard your coverage of the dataset will be greater (but it still does not have to be 100% coverage).</p>
+<h2>Background to Dataset (TIMSS 2023)</h2>
+<p>TIMSS 2023 is the eight assessment cycle of TIMSS, the Trends in International Mathematics and Science Study. TIMSS 2023, was conducted with students in 64 countries and 8 benchmarking systems.  The study is conducted every four years and given to students in grade 4 (4th class in Irish primary schools) and to students in grade 8 (2nd year in Irish secondary schools). </p>
+<p>The eight assessment cycle of TIMSS, TIMSS 2023 was published in December 2024 and the data collated was made publicly available in February 6, 2025. We want to explore this data and see what insights we can gain from it.</p>
+<p>The dataset is huge (2.9+ GB including documentation). For each of the 64 countries in the study and for both of two grades there are eight files <a href="../../../resources/TIMSS/docs/T23_User_Guide_International_Database.pdf">T23 User Guide, (exhibit 2.4, p.52)</a>. </p>
+<p>So to keep this assignment manageable we will:</p>
+<ul>
+<li>Limit treatment to one country (Ireland). </li>
+<li>Only look at grade 8 performance.</li>
+<li>Ignore Science performance and Science teacher data, so only look at Mathematics.</li>
+<li>Only look at the standard results (and ignore the Problem Solving and Inquiry (PSI) tasks and bridge variation of results).</li>
+</ul>
+<p>As a result, the 1024+ data files in the TIMSS study drop to the following files:</p>
+<table>
+<thead>
+<tr>
+<th>Filename</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SPSS/bcgirlm8.sav &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td>School context data</td>
+</tr>
+<tr>
+<td>SPSS/bsairlm8.sav</td>
+<td>Student achievement data</td>
+</tr>
+<tr>
+<td>SPSS/bspirlm8.sav</td>
+<td>Student process data</td>
+</tr>
+<tr>
+<td>SPSS/bsrirlm8.sav</td>
+<td>Within-country scoring reliability data</td>
+</tr>
+<tr>
+<td>SPSS/bsgirlm8.sav</td>
+<td>Student context data data</td>
+</tr>
+<tr>
+<td>SPSS/bstirlm8.sav</td>
+<td>Student achievement data</td>
+</tr>
+<tr>
+<td>SPSS/btmirlm8.sav</td>
+<td>Mathematics teacher context data</td>
+</tr>
+<tr>
+<td>SPSS/btsirlm8.sav</td>
+<td>Science teacher context data (we will ignore this)</td>
+</tr>
+</tbody>
+</table>
+<p>Notes: </p>
 <ul>
 <li>
-<p>The number of cases is small (especially after cleaning) so you will need to relay on cross validation scoring rather than train/validation/test split. In fact, I would probably not do a train/test split at all.</p>
+<p>The naming convention used for filename is:</p>
+<ul>
+<li>first three letters (<code>bcg</code>,<code>bsa</code>,<code>bsp</code>,<code>bsr</code>,<code>bsg</code>,<code>bst</code>,<code>btm</code>, and <code>bts</code>) indicating the grade level and purpose of the file.</li>
+<li>next three letters indicate the country (e.g. <code>irl</code> for Ireland).</li>
+<li>the next two characters, <code>m8</code>, indicate the eight cycle of TIMSS.</li>
+</ul>
 </li>
 <li>
-<p>The dataset is imbalanced and in addition to the low number of cases we need to be careful whenever preforming a test/train or CV split and will need to apply imbalanced techniques (You could try SMOTE). </p>
-</li>
-<li>
-<p>Accuracy is a uninformative measure of success for a defect detector, because two detectors with the similar accuracy can have widely varying True Positive and False Positive rates. Hence we will use PR AUC as our metric.
- A good article on the PR AUC metric (and more) is <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4349800/pdf/pone.0118432.pdf">The Precision-Recall Plot Is More Informative than the ROC Plot When Evaluating Binary Classifiers on Imbalanced Datasets</a> or see Median article 
- <a href="https://medium.com/@douglaspsteen/precision-recall-curves-d32e5b290248">Precision-Recall Curves</a> and 
- sklearn's <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_curve.html">sklearn.metrics.precision_recall_curve</a>.</p>
-</li>
-<li>
-<p>Feature importance is relevant here as we want to know what impacts code quality. So you should be able to make some comments on which features are important, and their relative importance etc.</p>
+<p>For completeness, the Science teacher context data (<code>btsirlm8.sav</code>) is still included in the dataset, but as mentioned above, we will not use it in this assignment.</p>
 </li>
 </ul>
-<h2>Submission</h2>
-<p>Upload the following notebooks (and additional python scripts if used):</p>
+<p>To understand this dataset you will need the following:</p>
 <ul>
 <li>
-<p><code>NASA_Defects_-_01_-_Clean.ipynb</code> <br/></p>
+<p><a href="../../../resources/TIMSS/docs/T23_User_Guide_International_Database.pdf">TIMSS 2023 User Guide for the International Database</a><br /></p>
 <ul>
-<li>Reads in dataset from subfolder <code>orig/jm1.csv</code>.</li>
-<li>Generates a report describing both the number of features and the number of cases with issues. (Issues described in <a href="#paper">[1]</a>.) </li>
-<li>Cleans the dataset using process covered in <a href="#paper">[1]</a> and saves new dataset as <code>data/jm1.csv</code>.</li>
+<li>Chapter 2 outlines the purpose of each of the data files and their structure.</li>
 </ul>
 </li>
 <li>
-<p><code>NASA_Defects_-_02_-_Model.ipynb</code> <br/>  </p>
-</li>
-<li>Reads in cleaned dataset from <code>data/jm1.csv</code>.</li>
-<li>Performs feature engineering, model selection and optimisation.</li>
-<li>Generates a suitable feature importance summary.</li>
+<p><a href="../../../resources/TIMSS/docs/T23_G8_Codebook">Codebook</a><br /></p>
+<ul>
+<li>This excel workbook contains the TIMSS codebook. It contains a worksheet per each type of data file in that database.</li>
+<li>Each worksheet lists the variables in the data file, their type, and the categories for categorical variables, etc.</li>
 </ul>
-<p><strong>Don't compress or archive the notebooks.</strong> Your files will be placed in the root folder with our typical ML project setup, in which you can assume has the original dataset as follows:</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code>NASA_Defects
-├── NASA_Defects_-_01_-_Clean.ipynb   &lt;-- your file
-├── NASA_Defects_-_02_-_Model.ipynb   &lt;-- your file
-└── orig
-    └── jm1.csv
+</li>
+<li>
+<p>Also you might find of use/interest following report generated by the Irish team which examines the performance of the Ireland students:
+<a href="../../../resources/TIMSS/extra/TIMSS_2023_National_Report_Ireland.pdf">TIMSS_2023_National_Report_Ireland.pdf</a>.</p>
+</li>
+</ul>
+<h2>Reading the dataset</h2>
+<p>The dataset is published in two formats <a href="https://www.ibm.com/products/spss-statistics">SPSS</a> and <a href="https://www.sas.com">SAS</a>.  We will use the SPSS format which contains the data and meta information about each column (type,categories, etc).</p>
+<p>Pandas can read SPSS <code>.sav</code> files once the python module <code>pyreadstat</code> is installed. So first install <code>pyreadstat</code> by:</p>
+<ul>
+<li>If using anaconda and within a jupyter-lab notebook type </li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>!conda<span class="w"> </span>install<span class="w"> </span>conda-forge::pyreadstat
 </code></pre></div></td></tr></table></div>
 
-<p class="alert alert-warning">Uploaded notebooks must be fully executable AS IS, when placed in the root project folder. If you are developing on COLAB then use code that I gave in the practicals to map to Google drive and have seamless file I/O when switching between COLAB and local files. </p>
-<p>:MOODLE: submit</p>
-<h2>Grading</h2>
-<p>The grading will a weighted average of performance on each of the following: (Please note that the weights given here are indicative and are subject to change  (max ±5%).)</p>
 <ul>
-<li>&nbsp;&nbsp;5% &mdash; Two notebooks matching requirements.</li>
-<li>30% &mdash; Cleaning steps listed clearly and applied correctly.</li>
-<li>25% &mdash; Summary of issues counted by features and by cases correct. (DON'T FORGET THIS)</li>
-<li>25% &mdash; Reasonable model building process, (possibly including SMOTE) to address imbalance in dataset.</li>
-<li>15% &mdash; Summary of feature importance.</li>
+<li>If using anaconda and running an anaconda shell </li>
 </ul>
-<h2>Updates / Questions etc</h2>
-<p>I will use a <a href="https://datamining2202324.slack.com/archives/C06JKTGN8HW">separate Slack channel</a> for this assignment to help keep the posts organised. I would encourage you to ask questions &mdash; the paper is relatively clear but still there are places  in which it could be improved.</p>
-<h2>References</h2>
-<ol>
-<li>
-<p><a name="paper"></a><a href="https://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.427.2219">"Data Quality: Some Comments on the NASA Software Defect Data Sets", Shepperd et al..</a> 
- <br/>(<a href="files/Data_Quality_Some_Comments_on_the_NASA_Software_Defect_Data_Sets__Shepperd__2012__JM1.pdf">local copy</a>)</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>conda<span class="w"> </span>install<span class="w"> </span>conda-forge::pyreadstat
+</code></pre></div></td></tr></table></div>
+
+<ul>
+<li>If using standard python type </li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>pyreadstat
+</code></pre></div></td></tr></table></div>
+
+<p>Then to read in a given datafile we use <code>pd.read_spss</code> command.</p>
+<p>We also want to read the codebook to understand the data. Since this is an excel workbook, we can use the <code>pd.read_excel</code> command to read this.</p>
+<h2>Building a Dashboard</h2>
+<p>We want to build a dashboard using the python library, <a href="https://streamlit.io">streamlit</a>.</p>
+<p>Even taking the limited selection of files that we have, there is still too much data with with (approximately 3542 variables). In fact, one of the reasons for picking this dataset was so that there are too many variables to deal with in the limited time you should allocate to a single assignment.  </p>
+<p>So you will need to pick aspects that are of interest and focus on these. For example (and don't be limited to these suggestions):</p>
+<ul>
+<li>You could do a deep dive into any ONE of the data files:<ul>
+<li>For example, you could look at the <code>bsg</code> data file, storing student context and build a profile of the type of students who took the test. </li>
+<li>Or you could look at the <code>btm</code> data file and build a profile of the mathematics teachers who taught the students who took the test. </li>
+<li>Or you could look at the <code>bcg</code> data file and build a profile of the schools that the students attended.</li>
+</ul>
 </li>
-<li>
-<p><a name="sm1"></a><a href="https://ieeexplore.ieee.org/document/1702388">"A Complexity Measure", T.J. McCabe, IEEE Transactions on Software Engineering, 1976.</a>
- <br/>(<a href="files/A_Complexity_Measure__McCabe__1976.pdf">local copy</a>)</p>
+<li>You could link data from different files:<ul>
+<li>For example, you could link the <code>bsg</code> data file with the <code>bst</code> data file to see if there is a relationship between student context and teacher context. </li>
+<li>Or you could link the <code>bsg</code> data file with the <code>bsa</code> data file to see if there is a relationship between student context and student achievement.</li>
+</ul>
 </li>
-<li>
-<p><a name="sm2"></a><a href="https://dl.acm.org/doi/book/10.5555/540137">"Elements of Software Science", M.H. Halstead, 1977.</a></p>
-</li>
-<li>
-<p><a name="ssmote"></a><a href="https://machinelearningmastery.com/smote-oversampling-for-imbalanced-classification/">SMOTE for Imbalanced Classification with Python.</a><br />Probably the best article on SMOTE.</p>
-</li>
-</ol>
+</ul>
+<h2>Steps</h2>
+<h3>Step 1+: Assignment Setup</h3>
+<p>Create a root folder for this assignment and download notebook, <a href="files/T23_G8_-_00_-_Assignment.ipynb">T23_G8_-<em>00</em>-_Assignment.ipynb</a>. Run all cells, to:</p>
+<ul>
+<li>Create assignment tree. </li>
+<li>Download the required datafiles and documentation.</li>
+<li>Generate a zip file of your assignment files to upload to Moodle.</li>
+</ul>
+<p>You should end up with the following tree structure.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code>.
+├──<span class="w"> </span>T23_G8_-_00_-_Assignment.ipynb
+├──<span class="w"> </span>T23_G8_-_01_-_Import.ipynb
+├──<span class="w"> </span>TIMSS_Dashboard.zip
+├──<span class="w"> </span>app
+│<span class="w">   </span>└──<span class="w"> </span>streamlit_app.py
+├──<span class="w"> </span>data
+└──<span class="w"> </span>orig
+<span class="w">    </span>├──<span class="w"> </span>SPSS
+<span class="w">    </span>│<span class="w">   </span>├──<span class="w"> </span>bcgirlm8.sav
+<span class="w">    </span>│<span class="w">   </span>├──<span class="w"> </span>bsairlm8.sav
+<span class="w">    </span>│<span class="w">   </span>├──<span class="w"> </span>bsgirlm8.sav
+<span class="w">    </span>│<span class="w">   </span>├──<span class="w"> </span>bspirlm8.sav
+<span class="w">    </span>│<span class="w">   </span>├──<span class="w"> </span>bsrirlm8.sav
+<span class="w">    </span>│<span class="w">   </span>├──<span class="w"> </span>bstirlm8.sav
+<span class="w">    </span>│<span class="w">   </span>├──<span class="w"> </span>btmirlm8.sav
+<span class="w">    </span>│<span class="w">   </span>└──<span class="w"> </span>btsirlm8.sav
+<span class="w">    </span>├──<span class="w"> </span>docs
+<span class="w">    </span>│<span class="w">   </span>├──<span class="w"> </span>T23_G8_Codebook.xlsx
+<span class="w">    </span>│<span class="w">   </span>└──<span class="w"> </span>T23_User_Guide_International_Database.pdf
+<span class="w">    </span>└──<span class="w"> </span>extra
+<span class="w">        </span>└──<span class="w"> </span>TIMSS_2023_National_Report_Ireland.pdf
+</code></pre></div></td></tr></table></div>
+
+<h3>Step 2+: Import the Dataset</h3>
+<p>The notebook <a href="files/T23_G8_-_01_-_Import.ipynb">T23_G8_-<em>01</em>-_Import.ipynb</a> shows some code that I used to initially explore the dataset. Your should to review this code and then complete the cleaning process. Some initial cleaning step ideas are given to help you get started.</p>
+<h3>Step 3+: Explore the Dataset</h3>
+<p>You should perform a <strong>cursory</strong> exploratory data analysis to decide on what aspects of the dataset you wish to focus on, and the resulting structure of your dashboard.</p>
+<h3>Step 4+: Build the Dashboard</h3>
+<p>here you ... well, build the dashboard </p>
+<h3>Step 5+: Create Archive to Upload to Moodle</h3>
+<p>Run all cells in notebook <code>T23_G8_-_00_-_Assignment.ipynb</code> to generate ZIP Archive to upload to Moodle using the following link.</p>
+<div class="pager">
+<a class="btn btn-primary btn-lg" href="https://moodle.wit.ie/mod/assign/view.php?id=4469268" role="button">Moodle Assignment</a>
+</div>
 		
 		<ul class="pager">
 			

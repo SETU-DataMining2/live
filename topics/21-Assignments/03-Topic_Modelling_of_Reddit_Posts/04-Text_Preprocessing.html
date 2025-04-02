@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Data Mining 2</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../../style/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../../../style/codehilite/css/default.css" rel="stylesheet">
+    <link href="../../../style/misc/css/module.css" rel="stylesheet">
+    <link href="../../../style/misc/css/practical.css" rel="stylesheet">
+
+	<script type="text/javascript"
+	  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script>
+
+  </head>
+
+<body>
+
+	<!-- Fixed navbar -->
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			
+			
+	    	<div class="collapse navbar-collapse">
+
+				<ul class="nav navbar-nav navbar-left">
+					<!-- Moodle -->
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="https://moodle.wit.ie/course/view.php?id=209060" target="_blank"><img height="18pt" src="../../../style/misc/img/moodle_logo_on_blue.gif" /></a>
+						</div>						
+					</li>
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="https://datamining2202425.slack.com" target="_blank"><img height="15pt" src="../../../style/misc/img/slack_logo.png" /></a>
+						</div>						
+					</li>
+				</ul>
+
+	      		<ul class="nav navbar-nav navbar-right">
+
+					<!-- module home -->
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="../../../index.html"><span class="glyphicon glyphicon-home"></span></a>
+						</div>						
+					</li>
+					
+					<!-- topics -->
+	        		<li>
+						<div class="navbar-collapse collapse" id="b">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-list-alt"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li class="dropdown-header">Topics</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li>
+
+					<!-- resources -->
+	        		<li>
+						<div class="navbar-collapse collapse" id="b">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-th-list"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li class="dropdown-header">Resources</li>
+										
+										<li >
+											<a href="../../../topics/21-Assignments/index.html#01-Building_a_Dasbboard">Building a Dasbboard</a>
+										</li>
+										
+										<li >
+											<a href="../../../topics/21-Assignments/index.html#02-Kaggle_Competition">Kaggle Competition</a>
+										</li>
+										
+										<li class="active">
+											<a href="../../../topics/21-Assignments/index.html#03-Topic_Modelling_of_Reddit_Posts">Topic Modelling of Reddit Posts</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li>
+								
+					<!-- pages-->
+	        		<li>
+						<div class="navbar-collapse collapse" id="c">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span>Text Preprocessing</span
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										
+										<li >
+											<a href="00-Outline.html">Outline</a>
+										</li>
+										
+										<li >
+											<a href="01-Setup_and_Load.html">Setup and Load</a>
+										</li>
+										
+										<li >
+											<a href="02-Verify_Datasets.html">Verify Datasets</a>
+										</li>
+										
+										<li >
+											<a href="03-Match_Paper.html">Match Paper</a>
+										</li>
+										
+										<li class="active">
+											<a href="04-Text_Preprocessing.html">Text Preprocessing</a>
+										</li>
+										
+										<li >
+											<a href="05-Sample_Dataset.html">Sample Dataset</a>
+										</li>
+										
+										<li >
+											<a href="06-Topic_Modelling.html">Topic Modelling</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li> 
+					
+	        	</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- contents -->
+	<div class="container">
+		
+		<ul class="pager">
+			
+			<li class="previous"><a href="03-Match_Paper.html">&larr; Previous (Match Paper)</a></li>
+			
+			
+			
+			<li class="next"><a href="05-Sample_Dataset.html">Next (Sample Dataset) &rarr;</a></li>
+			
+		</ul>
+		
+		<h1>Task 4: Text Preprocessing (~15%)</h1>
+<p>Create a section in your notebook called <strong>Text Preprocessing</strong>.</p>
+<hr />
+<p>We are going to performs some topic modelling, but before we can get to that we need to clean our text. As discussed in the <a href="../../07-Text_Mining/22-Practical_-_Trumps_Claims/00-Outline.html">topic modelling of Trumps false claims practical</a> I like to create a function that performs most of the text cleaning, and I typically have two functions (Note name change of functions to make their use clearer):</p>
+<ul>
+<li>
+<p><code>generate_tokens(text, **kwargs)</code> <br />
+Takes in raw text (and optional keyword arguments) and converts the raw text to a bag (list) of cleaned tokens. Using steps cleaning, tokenising, striping stop-words, standardising (lemmisation/stemming).
+ (Note in the practical I called this function <code>clean_text</code>.)</p>
+</li>
+<li>
+<p><code>generate_ngrams(tokens, **kwargs)</code> <br />
+Generate ngrams (usually bigrams or trigrams) from a bag (list) of tokens.</p>
+</li>
+</ul>
+<h1>Function <code>generate_tokens(text, **kwargs)</code></h1>
+<p>In the practical I gave you the template (Note name change)</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">generate_tokens</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_token_len</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a string, separate into tokens and clean. Return list of tokens.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># lower case</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="n">lower</span> <span class="k">else</span> <span class="n">text</span> 
+
+    <span class="c1"># TODO </span>
+    <span class="c1"># tokenize text</span>
+    <span class="c1"># drop stop-words and punctuation (see string.punctuation)</span>
+    <span class="c1"># lemmatize each token</span>
+    <span class="c1"># drop tokens less than min_token_len</span>
+
+    <span class="k">return</span> <span class="n">clean_text</span>
+</code></pre></div></td></tr></table></div>
+
+<p>and during the lab we implemented the following </p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">nltk</span> 
+
+<span class="c1"># stopwords</span>
+<span class="n">default_stopwords</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">corpus</span><span class="o">.</span><span class="n">stopwords</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="s1">&#39;english&#39;</span><span class="p">)</span>
+
+<span class="c1"># lemmatizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nltk.stem</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordNetLemmatizer</span>
+<span class="n">lemmatizer</span> <span class="o">=</span> <span class="n">WordNetLemmatizer</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_tokens</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_token_len</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a string, separate into tokens and clean. Return list of tokens.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># lower case</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="n">lower</span> <span class="k">else</span> <span class="n">text</span> 
+
+    <span class="c1"># tokenize text</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">word_tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="c1"># drop stop-words and punctuation (see string.punctuation)</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tokens</span> <span class="k">if</span> <span class="n">t</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">default_stopwords</span> <span class="ow">and</span> <span class="n">t</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">punctuation</span> <span class="p">]</span>
+
+    <span class="c1"># lemmatize each token</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span><span class="n">lemmatizar</span><span class="o">.</span><span class="n">lemmatize</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">]</span>
+
+    <span class="c1"># drop tokens less than min_token_len</span>
+    <span class="k">if</span> <span class="n">min_token_length</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tokens</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">&gt;=</span><span class="n">min_token_length</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">tokens</span>
+</code></pre></div></td></tr></table></div>
+
+<p>If we define a small set of sample text, such as</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">sample_text</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;The movie was crap &quot;</span><span class="p">,</span>
+    <span class="s2">&quot;The book was kind of good.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;A really bad, horrible book. 🤨&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;Today sux&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;Today kinda sux! But I&#39;ll get by, lol 😃&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sentiment analysis is shit. &quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sentiment analysis is the shit.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;I like to hate Michael Bay films, but I couldn&#39;t fault this one&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+
+<p>we can text this function, as follows</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">sample_text</span><span class="p">:</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">min_token_length</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="se">\n\t</span><span class="si">{</span><span class="n">tokens</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>to get output</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code>The movie was crap 
+    [&#39;movie&#39;, &#39;crap&#39;]
+The book was kind of good.
+    [&#39;book&#39;, &#39;kind&#39;, &#39;good&#39;]
+A really bad, horrible book. 🤨
+    [&#39;really&#39;, &#39;horrible&#39;, &#39;book&#39;]
+Today sux
+    [&#39;today&#39;]
+Today kinda sux! But I&#39;ll get by, lol 😃
+    [&#39;today&#39;, &#39;kinda&#39;]
+sentiment analysis is shit. 
+    [&#39;sentiment&#39;, &#39;analysis&#39;, &#39;shit&#39;]
+sentiment analysis is the shit.
+    [&#39;sentiment&#39;, &#39;analysis&#39;, &#39;shit&#39;]
+I like to hate Michael Bay films, but I couldn&#39;t fault this one
+    [&#39;like&#39;, &#39;hate&#39;, &#39;michael&#39;, &#39;film&#39;, &#39;could&#39;, &#39;fault&#39;]
+</code></pre></div></td></tr></table></div>
+
+<p>The above implementation is ok but it still kinda limited - you CAN use it for the rest of this assignment but you might get better results if you implement the following version:</p>
+<h2>Optional &mdash; Improved function <code>generate_tokens(text, **kwargs)</code></h2>
+<p>First we load and define alternative tokenizers, default stopwords, etc. &mdash; feel free to add more </p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">emoji</span><span class="o">,</span><span class="w"> </span><span class="nn">string</span><span class="o">,</span><span class="w"> </span><span class="nn">nltk</span>
+
+<span class="c1"># define three possible tokenizers</span>
+<span class="n">tokenizer_1</span> <span class="o">=</span> <span class="nb">str</span><span class="o">.</span><span class="n">split</span>
+<span class="n">tokenizer_2</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">word_tokenize</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nltk.tokenize</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegexpTokenizer</span>
+<span class="n">tokenizer_3</span> <span class="o">=</span> <span class="n">RegexpTokenizer</span><span class="p">(</span><span class="s2">&quot;\w+|\$[\d\.]+|http\S+&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">tokenize</span>
+
+<span class="c1"># define two possible default_stopwords</span>
+<span class="n">default_stopwords_1</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">corpus</span><span class="o">.</span><span class="n">stopwords</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="s1">&#39;english&#39;</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">en_core_web_sm</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">en_core_web_sm</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+<span class="n">default_stopwords_2</span> <span class="o">=</span> <span class="n">nlp</span><span class="o">.</span><span class="n">Defaults</span><span class="o">.</span><span class="n">stop_words</span>
+
+<span class="n">lemmatizer</span> <span class="o">=</span> <span class="n">WordNetLemmatizer</span><span class="p">()</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">nltk.stem.porter</span><span class="w"> </span><span class="kn">import</span> <span class="n">PorterStemmer</span>
+<span class="n">stemmer</span> <span class="o">=</span> <span class="n">PorterStemmer</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+
+<p>Now the shell of our improved <code>generate_tokens</code> looks like</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">generate_tokens</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+    <span class="n">tokenizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">default_stopwords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extra_stopwords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+    <span class="n">lemmatizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stemmer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">min_token_length</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a string, separate into tokens and clean.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># lower case</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="n">lower</span> <span class="k">else</span> <span class="n">text</span> 
+
+    <span class="c1"># remove emoji </span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">emoji</span><span class="o">.</span><span class="n">replace_emoji</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="c1"># tokenize text (always needed)</span>
+    <span class="k">assert</span> <span class="n">tokenizer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Need to specify a tokenizer to split text into tokens&quot;</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="c1"># TODO drop default_stopwords and extra_stopwords (if parameters are provided) and punctuation</span>
+
+    <span class="c1"># TODO lemmatize each token (only if lemmatizer parameter is provided)</span>
+
+    <span class="c1"># TODO stem each token (only if stemmer parameter is provided)</span>
+
+    <span class="k">if</span> <span class="n">min_token_length</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tokens</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">&gt;=</span><span class="n">min_token_length</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">tokens</span>
+</code></pre></div></td></tr></table></div>
+
+<p>The following examples show my implementation of this function for various different keyword arguments.</p>
+<h3>Example: uses split and no filtering on stopwords and no stemming/lemmatization</h3>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">sample_text</span><span class="p">:</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer_1</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="se">\n\t</span><span class="si">{</span><span class="n">tokens</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>has output</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code>The movie was crap 
+    [&#39;the&#39;, &#39;movie&#39;, &#39;was&#39;, &#39;crap&#39;]
+The book was kind of good.
+    [&#39;the&#39;, &#39;book&#39;, &#39;was&#39;, &#39;kind&#39;, &#39;of&#39;, &#39;good.&#39;]
+A really bad, horrible book. 🤨
+    [&#39;a&#39;, &#39;really&#39;, &#39;bad,&#39;, &#39;horrible&#39;, &#39;book.&#39;]
+Today sux
+    [&#39;today&#39;, &#39;sux&#39;]
+Today kinda sux! But I&#39;ll get by, lol 😃
+    [&#39;today&#39;, &#39;kinda&#39;, &#39;sux!&#39;, &#39;but&#39;, &quot;i&#39;ll&quot;, &#39;get&#39;, &#39;by,&#39;, &#39;lol&#39;]
+sentiment analysis is shit. 
+    [&#39;sentiment&#39;, &#39;analysis&#39;, &#39;is&#39;, &#39;shit.&#39;]
+sentiment analysis is the shit.
+    [&#39;sentiment&#39;, &#39;analysis&#39;, &#39;is&#39;, &#39;the&#39;, &#39;shit.&#39;]
+I like to hate Michael Bay films, but I couldn&#39;t fault this one
+    [&#39;i&#39;, &#39;like&#39;, &#39;to&#39;, &#39;hate&#39;, &#39;michael&#39;, &#39;bay&#39;, &#39;films,&#39;, &#39;but&#39;, &#39;i&#39;, &quot;couldn&#39;t&quot;, &#39;fault&#39;, &#39;this&#39;, &#39;one&#39;]
+</code></pre></div></td></tr></table></div>
+
+<h3>Example: uses default nltk tokeniser and filters stopwords and no stemming/lemmatization</h3>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">sample_text</span><span class="p">:</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer_1</span><span class="p">,</span> <span class="n">default_stopwords</span><span class="o">=</span><span class="n">default_stopwords_1</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="se">\n\t</span><span class="si">{</span><span class="n">tokens</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>has output</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code>The movie was crap 
+    [&#39;movie&#39;, &#39;crap&#39;]
+The book was kind of good.
+    [&#39;book&#39;, &#39;kind&#39;, &#39;good.&#39;]
+A really bad, horrible book. 🤨
+    [&#39;really&#39;, &#39;bad,&#39;, &#39;horrible&#39;, &#39;book.&#39;]
+Today sux
+    [&#39;today&#39;, &#39;sux&#39;]
+Today kinda sux! But I&#39;ll get by, lol 😃
+    [&#39;today&#39;, &#39;kinda&#39;, &#39;sux!&#39;, &quot;i&#39;ll&quot;, &#39;get&#39;, &#39;by,&#39;, &#39;lol&#39;]
+sentiment analysis is shit. 
+    [&#39;sentiment&#39;, &#39;analysis&#39;, &#39;shit.&#39;]
+sentiment analysis is the shit.
+    [&#39;sentiment&#39;, &#39;analysis&#39;, &#39;shit.&#39;]
+I like to hate Michael Bay films, but I couldn&#39;t fault this one
+    [&#39;like&#39;, &#39;hate&#39;, &#39;michael&#39;, &#39;bay&#39;, &#39;films,&#39;, &#39;fault&#39;, &#39;one&#39;]
+</code></pre></div></td></tr></table></div>
+
+<h3>Example: uses nltk regex-tokeniser and filters stopwords and lemmatization</h3>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">sample_text</span><span class="p">:</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer_3</span><span class="p">,</span> <span class="n">default_stopwords</span><span class="o">=</span><span class="n">default_stopwords_1</span><span class="p">,</span> <span class="n">lemmatizer</span><span class="o">=</span><span class="n">lemmatizer</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="se">\n\t</span><span class="si">{</span><span class="n">tokens</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>has output</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code>The movie was crap 
+    [&#39;movie&#39;, &#39;crap&#39;]
+The book was kind of good.
+    [&#39;book&#39;, &#39;kind&#39;, &#39;good&#39;]
+A really bad, horrible book. 🤨
+    [&#39;really&#39;, &#39;bad&#39;, &#39;horrible&#39;, &#39;book&#39;]
+Today sux
+    [&#39;today&#39;, &#39;sux&#39;]
+Today kinda sux! But I&#39;ll get by, lol 😃
+    [&#39;today&#39;, &#39;kinda&#39;, &#39;sux&#39;, &#39;get&#39;, &#39;lol&#39;]
+sentiment analysis is shit. 
+    [&#39;sentiment&#39;, &#39;analysis&#39;, &#39;shit&#39;]
+sentiment analysis is the shit.
+    [&#39;sentiment&#39;, &#39;analysis&#39;, &#39;shit&#39;]
+I like to hate Michael Bay films, but I couldn&#39;t fault this one
+    [&#39;like&#39;, &#39;hate&#39;, &#39;michael&#39;, &#39;bay&#39;, &#39;film&#39;, &#39;fault&#39;, &#39;one&#39;]
+</code></pre></div></td></tr></table></div>
+
+<p><strong>TODO</strong></p>
+<p>OK, now we have a decent token generator function, but they are still improvements, such as:</p>
+<ul>
+<li>Instead of always deleting emojis we could convert back to text.</li>
+</ul>
+<h2>Function <code>generate_ngrams</code></h2>
+<p>This function is nearly exactly (only name changed) the same as given in Trump false claim practial.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">gensim</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gensim.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Phrases</span>
+
+<span class="c1"># create tokens of sample_text for testing</span>
+<span class="n">docs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">generate_tokens</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer_3</span><span class="p">,</span> <span class="n">lemmatizer</span><span class="o">=</span><span class="n">lemmatizer</span><span class="p">,</span> <span class="n">default_stopwords</span><span class="o">=</span><span class="n">default_stopwords_1</span><span class="p">,</span> <span class="n">min_token_length</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">sample_text</span><span class="p">]</span>
+
+<span class="c1"># generate bigrams and trigrams using tokens in docs</span>
+<span class="n">bigram</span> <span class="o">=</span> <span class="n">Phrases</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">min_count</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">trigram</span> <span class="o">=</span> <span class="n">Phrases</span><span class="p">(</span><span class="n">bigram</span><span class="p">[</span><span class="n">docs</span><span class="p">])</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_ngrams</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span> 
+    <span class="k">return</span> <span class="n">trigram</span><span class="p">[</span><span class="n">bigram</span><span class="p">[</span><span class="n">tokens</span><span class="p">]]</span>
+
+<span class="n">ngrams</span> <span class="o">=</span> <span class="p">[</span><span class="n">generate_ngrams</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">]</span>
+
+<span class="n">ngrams</span>
+</code></pre></div></td></tr></table></div>
+
+<p>which generates</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code>[[&#39;movie&#39;, &#39;crap&#39;],
+ [&#39;book&#39;, &#39;kind&#39;, &#39;good&#39;],
+ [&#39;really&#39;, &#39;bad&#39;, &#39;horrible&#39;, &#39;book&#39;],
+ [&#39;today&#39;, &#39;sux&#39;],
+ [&#39;today&#39;, &#39;kinda&#39;, &#39;sux&#39;, &#39;get&#39;, &#39;lol&#39;],
+ [&#39;sentiment&#39;, &#39;analysis&#39;, &#39;shit&#39;],
+ [&#39;sentiment&#39;, &#39;analysis&#39;, &#39;shit&#39;],
+ [&#39;like&#39;, &#39;hate&#39;, &#39;michael&#39;, &#39;bay&#39;, &#39;film&#39;, &#39;fault&#39;, &#39;one&#39;]]
+</code></pre></div></td></tr></table></div>
+
+<p>Now, if we (you)</p>
+<ul>
+<li>
+<p>Select a set of documents - here we are going to take rows from <code>df_submissions</code> dataframe, and column <code>title</code> or <code>text</code>.</p>
+</li>
+<li>
+<p>Pick a suitable tokenizer, a suitable set of default stopwords, a suitable set of extra stopwords (you could pick these based on the output of the LDA model), pick a lemmatizer or stemmer.</p>
+</li>
+</ul>
+<p>then the</p>
+<ul>
+<li>function <code>generate_tokens</code> can be used to generate the tokens from the raw text.</li>
+<li>and function <code>generate_ngrams</code> can be used to generate the ngrams from the tokens.</li>
+</ul>
+		
+		<ul class="pager">
+			
+			<li class="previous"><a href="03-Match_Paper.html">&larr; Previous (Match Paper)</a></li>
+			
+			
+			
+			<li class="next"><a href="05-Sample_Dataset.html">Next (Sample Dataset) &rarr;</a></li>
+			
+		</ul>
+
+	</div>
+	
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="../../../style/bootstrap/js/bootstrap.min.js"></script>
+	
+  </body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Data Mining 2</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../../style/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../../../style/codehilite/css/default.css" rel="stylesheet">
+    <link href="../../../style/misc/css/module.css" rel="stylesheet">
+    <link href="../../../style/misc/css/practical.css" rel="stylesheet">
+
+	<script type="text/javascript"
+	  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script>
+
+  </head>
+
+<body>
+
+	<!-- Fixed navbar -->
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			
+			
+	    	<div class="collapse navbar-collapse">
+
+				<ul class="nav navbar-nav navbar-left">
+					<!-- Moodle -->
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="https://moodle.wit.ie/course/view.php?id=209060" target="_blank"><img height="18pt" src="../../../style/misc/img/moodle_logo_on_blue.gif" /></a>
+						</div>						
+					</li>
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="https://datamining2202425.slack.com" target="_blank"><img height="15pt" src="../../../style/misc/img/slack_logo.png" /></a>
+						</div>						
+					</li>
+				</ul>
+
+	      		<ul class="nav navbar-nav navbar-right">
+
+					<!-- module home -->
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="../../../index.html"><span class="glyphicon glyphicon-home"></span></a>
+						</div>						
+					</li>
+					
+					<!-- topics -->
+	        		<li>
+						<div class="navbar-collapse collapse" id="b">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-list-alt"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li class="dropdown-header">Topics</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li>
+
+					<!-- resources -->
+	        		<li>
+						<div class="navbar-collapse collapse" id="b">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-th-list"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li class="dropdown-header">Resources</li>
+										
+										<li >
+											<a href="../../../topics/21-Assignments/index.html#01-Building_a_Dasbboard">Building a Dasbboard</a>
+										</li>
+										
+										<li >
+											<a href="../../../topics/21-Assignments/index.html#02-Kaggle_Competition">Kaggle Competition</a>
+										</li>
+										
+										<li class="active">
+											<a href="../../../topics/21-Assignments/index.html#03-Topic_Modelling_of_Reddit_Posts">Topic Modelling of Reddit Posts</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li>
+								
+					<!-- pages-->
+	        		<li>
+						<div class="navbar-collapse collapse" id="c">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span>Outline</span
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										
+										<li class="active">
+											<a href="00-Outline.html">Outline</a>
+										</li>
+										
+										<li >
+											<a href="01-Setup_and_Load.html">Setup and Load</a>
+										</li>
+										
+										<li >
+											<a href="02-Verify_Datasets.html">Verify Datasets</a>
+										</li>
+										
+										<li >
+											<a href="03-Match_Paper.html">Match Paper</a>
+										</li>
+										
+										<li >
+											<a href="04-Text_Preprocessing.html">Text Preprocessing</a>
+										</li>
+										
+										<li >
+											<a href="05-Sample_Dataset.html">Sample Dataset</a>
+										</li>
+										
+										<li >
+											<a href="06-Topic_Modelling.html">Topic Modelling</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li> 
+					
+	        	</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- contents -->
+	<div class="container">
+		
+		<ul class="pager">
+			
+			<li class="previous disabled"><a>&larr; Previous</a></li>
+			
+			
+			
+			<li class="next"><a href="01-Setup_and_Load.html">Next (Setup and Load) &rarr;</a></li>
+			
+		</ul>
+		
+		<h1>Analysis of QAnon User on Reddit</h1>
+<h2>Aim</h2>
+<p>Use a mixture of techniques to study user behaviour on known QAnon popular subreddits.</p>
+<h2>Background</h2>
+<p>This assignment is prompted by the paper <a href="#paper">Characterizing Reddit Participation of Users Who Engage in the QAnon Conspiracy Theories</a> whose authors collated the dataset that we will use.  </p>
+<p>The dataset is large (2.3GB as uncompressed CSV) so I will post it on slack. It consists of five tables:</p>
+<ul>
+<li><code>authors</code>: List of 13,182 reddit users who commented/submitted to QAnon identified subreddits. No missing values or other issues.</li>
+<li><code>comments</code>: List of 10,831,922 comments with full text. </li>
+<li><code>submissions</code>: List of 2,099,875 posts with full text. </li>
+<li><code>subreddits</code>: List of 12,987 subreddits where at least two QAnon-enthusiastic users have made a submission.</li>
+<li><code>paper</code>: List of 19 subreddits, identified in the paper [<a href="#paper">Appendix A, 1</a>], where QAnon users were more active.</li>
+</ul>
+<p>The paper looks at interaction &mdash; submission and comments &mdash; over three periods, each of 319 days in length.  The three periods are:</p>
+<ul>
+<li><strong>Pre-Q period</strong> 13 December 2016 - 28 October 2017.</li>
+<li><strong>Q period</strong>  28 October 2017 - 12 September 2018. From QAnon's first post on <code>4chan</code> up to the Reddit ban of QAnon-focused subreddits.</li>
+<li><strong>Post-Q period</strong> 12 September 2018 - 28 July 2019.</li>
+</ul>
+<p>We won't do the same analysis as covered in the paper, but instead try to see what other information we can extract.</p>
+<h2>Tasks</h2>
+<p>In below I have tried to break the analysis into separate tasks (with approximate weighting) which, except for the first task, are relatively independent. Your notebook should have level 2 sections covering each task.</p>
+<ul>
+<li><a href="01-Setup_and_Load.html">Task 1 (&nbsp;&nbsp;5%): Setup, load and prepare dataset</a></li>
+<li><a href="02-Verify_Datasets.html">Task 2 (15%): Verify datasets</a></li>
+<li><a href="03-Match_Paper.html">Task 3 (20%): Match data presented in paper</a></li>
+<li><a href="04-Text_Preprocessing.html">Task 4 (15%): Text preprocessing</a></li>
+<li><a href="05-Sample_Dataset.html">Task 5 (&nbsp;&nbsp;5%): Sample dataset</a></li>
+<li><a href="06-Topic_Modelling.html">Task 6 (40%): Topic modelling</a></li>
+</ul>
+<h3>Submission</h3>
+<p>Upload notebook with sections/task implemented as covered above.</p>
+<div class="pager">
+<a class="btn btn-primary btn-lg" href="https://moodle.wit.ie/mod/assign/view.php?id=4471187" role="button">Moodle Assignment</a>
+</div>
+
+<h2>References</h2>
+<ul>
+<li>
+<p><a name="paper"></a><a href="https://arxiv.org/abs/2203.07433">Characterizing Reddit Participation of Users Who Engage in the QAnon Conspiracy Theories</a>
+   (<a href="files/Characterizing_Reddit_Participation_of_Users_Who_Engage_in_the_QAnon_Conspiracy_Theories__2022.pdf">local copy</a>).</p>
+</li>
+<li>
+<p><a href="https://opendatagroup.github.io/data%20science/2019/03/21/preprocessing-text.html">When (not) to Lemmatize or Remove Stop Words in Text Preprocessing</a></p>
+</li>
+</ul>
+		
+		<ul class="pager">
+			
+			<li class="previous disabled"><a>&larr; Previous</a></li>
+			
+			
+			
+			<li class="next"><a href="01-Setup_and_Load.html">Next (Setup and Load) &rarr;</a></li>
+			
+		</ul>
+
+	</div>
+	
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="../../../style/bootstrap/js/bootstrap.min.js"></script>
+	
+  </body>
+</html>

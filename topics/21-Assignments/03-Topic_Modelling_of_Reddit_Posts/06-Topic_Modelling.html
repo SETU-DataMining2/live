@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Data Mining 2</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../../style/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../../../style/codehilite/css/default.css" rel="stylesheet">
+    <link href="../../../style/misc/css/module.css" rel="stylesheet">
+    <link href="../../../style/misc/css/practical.css" rel="stylesheet">
+
+	<script type="text/javascript"
+	  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script>
+
+  </head>
+
+<body>
+
+	<!-- Fixed navbar -->
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			
+			
+	    	<div class="collapse navbar-collapse">
+
+				<ul class="nav navbar-nav navbar-left">
+					<!-- Moodle -->
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="https://moodle.wit.ie/course/view.php?id=209060" target="_blank"><img height="18pt" src="../../../style/misc/img/moodle_logo_on_blue.gif" /></a>
+						</div>						
+					</li>
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="https://datamining2202425.slack.com" target="_blank"><img height="15pt" src="../../../style/misc/img/slack_logo.png" /></a>
+						</div>						
+					</li>
+				</ul>
+
+	      		<ul class="nav navbar-nav navbar-right">
+
+					<!-- module home -->
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="../../../index.html"><span class="glyphicon glyphicon-home"></span></a>
+						</div>						
+					</li>
+					
+					<!-- topics -->
+	        		<li>
+						<div class="navbar-collapse collapse" id="b">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-list-alt"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li class="dropdown-header">Topics</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li>
+
+					<!-- resources -->
+	        		<li>
+						<div class="navbar-collapse collapse" id="b">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-th-list"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li class="dropdown-header">Resources</li>
+										
+										<li >
+											<a href="../../../topics/21-Assignments/index.html#01-Building_a_Dasbboard">Building a Dasbboard</a>
+										</li>
+										
+										<li >
+											<a href="../../../topics/21-Assignments/index.html#02-Kaggle_Competition">Kaggle Competition</a>
+										</li>
+										
+										<li class="active">
+											<a href="../../../topics/21-Assignments/index.html#03-Topic_Modelling_of_Reddit_Posts">Topic Modelling of Reddit Posts</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li>
+								
+					<!-- pages-->
+	        		<li>
+						<div class="navbar-collapse collapse" id="c">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span>Topic Modelling</span
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										
+										<li >
+											<a href="00-Outline.html">Outline</a>
+										</li>
+										
+										<li >
+											<a href="01-Setup_and_Load.html">Setup and Load</a>
+										</li>
+										
+										<li >
+											<a href="02-Verify_Datasets.html">Verify Datasets</a>
+										</li>
+										
+										<li >
+											<a href="03-Match_Paper.html">Match Paper</a>
+										</li>
+										
+										<li >
+											<a href="04-Text_Preprocessing.html">Text Preprocessing</a>
+										</li>
+										
+										<li >
+											<a href="05-Sample_Dataset.html">Sample Dataset</a>
+										</li>
+										
+										<li class="active">
+											<a href="06-Topic_Modelling.html">Topic Modelling</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li> 
+					
+	        	</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- contents -->
+	<div class="container">
+		
+		<ul class="pager">
+			
+			<li class="previous"><a href="05-Sample_Dataset.html">&larr; Previous (Sample Dataset)</a></li>
+			
+			
+			
+			<li class="next disabled"><a>Next &rarr;</a></li>
+			
+		</ul>
+		
+		<h1>Task 6: Topic Modelling (~40%)</h1>
+<p>Create a section in your notebook called <strong>Text Preprocessing</strong>.</p>
+<hr />
+<p>Finally we get to topic modelling part. The dataframe <code>df_submissions</code> has two text columns <code>title</code> and <code>text</code>. 
+I want to see if topic modelling based on data from <code>title</code> column matches topic modelling based on <code>text</code> column.  </p>
+<p>I'm making a big assumption here. Namely: for any two rows, the <code>title</code> should be in the same topic whenever the <code>text</code> are in the same topics. </p>
+<p>If this assumption is true then:</p>
+<ul>
+<li>
+<p>Using column <code>title</code> as initial documents</p>
+<ul>
+<li>Generate tokens and store in column <code>title_tokens</code>.</li>
+<li>Generate ngrams, based on tokens in <code>title_tokens</code> and store in column <code>title_ngrams</code>.</li>
+<li>Generate LDA model, <code>title_model</code>, using <code>title_ngrams</code> using <code>num_topics=5</code>.</li>
+<li>Generate topics from the model <code>title_model</code> and store in column <code>title_topics</code>.</li>
+</ul>
+</li>
+<li>
+<p>Using column <code>text</code> as initial documents</p>
+<ul>
+<li>Generate tokens and store in column <code>text_tokens</code>.</li>
+<li>Generate ngrams, based on tokens in <code>text_tokens</code> and store in column <code>text_ngrams</code>.</li>
+<li>Generate LDA model, <code>text_model</code>, using <code>text_ngrams</code> using <code>num_topics=5</code>.</li>
+<li>Generate topics from the model <code>text_model</code> and store in column <code>text_topics</code>.</li>
+</ul>
+</li>
+<li>
+<p>Then a crosstab of <code>df.title_topics</code> and <code>df.text_topics</code> should have a single large count in each row and in each column.</p>
+</li>
+</ul>
+<figure>
+<img src="files/crosstab_1.png" width=60%>
+<figcaption>Result of crosstab of topics based on title and on text.</figcaption>
+</figure>
+
+<p>If we rearrange (permute) the rows/cols we might get a better alignment between <code>title_topic</code> and <code>text_topic</code>.  This is a simple optimisation problem, which is implemented in the following function</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">align_topics</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Finds the best relabelling (permutation) to maxamise alignment of title_topic and text_topic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">permutations</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">title_topic</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">text_topic</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">max_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">min</span>
+    <span class="n">max_permutation</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">permutation</span> <span class="ow">in</span> <span class="n">permutations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)):</span>
+        <span class="n">tmp</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">permutation</span><span class="p">])</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">trace</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">score</span><span class="o">&gt;</span><span class="n">max_score</span><span class="p">:</span>
+            <span class="n">max_score</span> <span class="o">=</span> <span class="n">score</span>
+            <span class="n">max_permutation</span> <span class="o">=</span> <span class="n">permutation</span>
+
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="n">mapping</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">-&gt;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">max_permutation</span><span class="p">)])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max score </span><span class="si">{</span><span class="n">max_score</span><span class="si">}</span><span class="s2"> obtained with relabeling:</span><span class="se">\n\t</span><span class="s2"> </span><span class="si">{</span><span class="n">mapping</span><span class="si">}</span><span class="se">\n</span><span class="s2">and resulting cross table of</span><span class="se">\n</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">max_score</span><span class="p">,</span> <span class="n">max_permutation</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">max_permutation</span><span class="p">])</span>
+
+<span class="n">score</span><span class="p">,</span> <span class="n">permutation</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">align_topics</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>Running this with <code>verbose=True</code> we get output</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code>Max score 898 obtained with relabeling:
+     0-&gt;0, 1-&gt;1, 2-&gt;4, 3-&gt;3, 4-&gt;2
+and resulting cross table of
+[[454 182 323   1   0]
+ [178 229  41   4  38]
+ [ 34  60  22   2   0]
+ [  0  14   3  12   0]
+ [  2   4 203   5  58]]
+</code></pre></div></td></tr></table></div>
+
+<p>All of the code to train the models is given in the trump false claims practical. But the following might be of use: </p>
+<ul>
+<li>
+<p>To speed up model fitting replace <code>LdaModel</code> by <code>LdaMulticore</code> but then you need to remove the <code>alpha</code> keyword argument (since that is not supported by <code>LdaMulticore</code>).</p>
+</li>
+<li>
+<p>To see the list of words used in each topic run</p>
+</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">topic</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">print_topics</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Topic: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">nWords: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">topic</span> <span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+
+<ul>
+<li>I would use the above lists of words to grow <code>extra_stopwords</code>, in the hope of improving the topic alignment.</li>
+</ul>
+<h2>Objective</h2>
+<p>Assuming <code>num_topics=5</code> and using LDA model <code>LdaMulticore</code> (or <code>LdaModel</code> if your computer does not support <code>LdaMulticore</code>) optimise the topic alignment between <code>title</code> and <code>text</code> by:</p>
+<ul>
+<li>Modifying the text preprocessing steps - tokenising, etc</li>
+<li>Modifying <code>default_stopwords</code> and extending <code>extra_stopwords</code>.</li>
+<li>Modifying the parameters used to generate the ngrams</li>
+</ul>
+		
+		<ul class="pager">
+			
+			<li class="previous"><a href="05-Sample_Dataset.html">&larr; Previous (Sample Dataset)</a></li>
+			
+			
+			
+			<li class="next disabled"><a>Next &rarr;</a></li>
+			
+		</ul>
+
+	</div>
+	
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="../../../style/bootstrap/js/bootstrap.min.js"></script>
+	
+  </body>
+</html>

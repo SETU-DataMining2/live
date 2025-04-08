@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Data Mining 2</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../../style/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../../../style/codehilite/css/default.css" rel="stylesheet">
+    <link href="../../../style/misc/css/module.css" rel="stylesheet">
+    <link href="../../../style/misc/css/practical.css" rel="stylesheet">
+
+	<script type="text/javascript"
+	  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script>
+
+  </head>
+
+<body>
+
+	<!-- Fixed navbar -->
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			
+			
+	    	<div class="collapse navbar-collapse">
+
+				<ul class="nav navbar-nav navbar-left">
+					<!-- Moodle -->
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="https://moodle.wit.ie/course/view.php?id=209060" target="_blank"><img height="18pt" src="../../../style/misc/img/moodle_logo_on_blue.gif" /></a>
+						</div>						
+					</li>
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="https://datamining2202425.slack.com" target="_blank"><img height="15pt" src="../../../style/misc/img/slack_logo.png" /></a>
+						</div>						
+					</li>
+				</ul>
+
+	      		<ul class="nav navbar-nav navbar-right">
+
+					<!-- module home -->
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="../../../index.html"><span class="glyphicon glyphicon-home"></span></a>
+						</div>						
+					</li>
+					
+					<!-- topics -->
+	        		<li>
+						<div class="navbar-collapse collapse" id="b">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-list-alt"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li class="dropdown-header">Topics</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li>
+
+					<!-- resources -->
+	        		<li>
+						<div class="navbar-collapse collapse" id="b">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-th-list"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li class="dropdown-header">Resources</li>
+										
+										<li >
+											<a href="../../../topics/07-Text_Mining/index.html#01-Regular_Expressions">Regular Expressions</a>
+										</li>
+										
+										<li >
+											<a href="../../../topics/07-Text_Mining/index.html#02-Introduction_to_Text_Mining">Introduction to Text Mining</a>
+										</li>
+										
+										<li class="active">
+											<a href="../../../topics/07-Text_Mining/index.html#21-Practical_-_Mistakes_Were_Made_But_Not_By_Me">Practical - Mistakes Were Made But Not By Me</a>
+										</li>
+										
+										<li >
+											<a href="../../../topics/07-Text_Mining/index.html#22-Practical_-_Trumps_Claims">Practical - Trumps Claims</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li>
+								
+					<!-- pages-->
+	        		<li>
+						<div class="navbar-collapse collapse" id="c">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span>Outline</span
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										
+										<li class="active">
+											<a href="00-Outline.html">Outline</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li> 
+					
+	        	</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- contents -->
+	<div class="container">
+		
+		<ul class="pager">
+			
+			<li class="previous disabled"><a>&larr; Previous</a></li>
+			
+			
+			
+			<li class="next disabled"><a>Next &rarr;</a></li>
+			
+		</ul>
+		
+		<h1>Mistakes were Made, but not by Me</h1>
+<h2>Aim</h2>
+<p>This is a small (&lt;30 lines of code) text (or filename) cleaning task requiring the use of regex or/and fuzzy pattern matching.</p>
+<p>In last year's Data Mining 2 class I asked students to submit two files as part of a particular assignment. The files were to be named <code>01-Clean.ipynb</code> and <code>02-Model.ipynb</code>.</p>
+<p>Like all students  &mdash;  except you of course &mdash; they decided to ignore the instructions and do their own thing and use different file names or some even decided to "help" by compressing files :-). </p>
+<p>So I had to write code to redress this situation, and want you to go through the same pain. </p>
+<h2>Details</h2>
+<ul>
+<li>Download the <a href="files/nasa.zip">following file tree</a> I have renamed folders and only have empty files to protect the innocent/guilty. So we have a file tree like:</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code>nasa
+├──<span class="w"> </span>Student-00
+│<span class="w">   </span>├──<span class="w"> </span><span class="m">01</span>-Clean.ipynb
+│<span class="w">   </span>└──<span class="w"> </span><span class="m">02</span>-Model.ipynb
+├──<span class="w"> </span>Student-01
+│<span class="w">   </span>├──<span class="w"> </span><span class="m">01</span>-Clean.ipynb
+│<span class="w">   </span>└──<span class="w"> </span><span class="m">02</span>-Model.ipynb
+├──<span class="w"> </span>Student-02
+│<span class="w">   </span>└──<span class="w"> </span>NASA-Software-Defect-Assignment.zip
+├──<span class="w"> </span>Student-07
+│<span class="w">   </span>├──<span class="w"> </span>clean.ipynb
+│<span class="w">   </span>└──<span class="w"> </span>model.ipynb
+...
+├──<span class="w"> </span>Student-14
+│<span class="w">   </span>└──<span class="w"> </span>NASA_ASSIGNMENT<span class="se">\ </span><span class="m">20080861</span>.zip
+...
+├──<span class="w"> </span>Student-18
+│<span class="w">   </span>├──<span class="w"> </span><span class="m">01</span>-Clean.ipynb
+│<span class="w">   </span>└──<span class="w"> </span><span class="m">02</span>-ModelVersion2.ipynb
+├──<span class="w"> </span>Student-19
+│<span class="w">   </span>├──<span class="w"> </span><span class="m">01</span>-Clean.ipynb
+│<span class="w">   </span>└──<span class="w"> </span><span class="m">02</span>-Model.ipynb
+├──<span class="w"> </span>Student-20
+│<span class="w">   </span>└──<span class="w"> </span><span class="m">02</span>-Model.ipynb
+├──<span class="w"> </span>Student-21
+│<span class="w">   </span>├──<span class="w"> </span><span class="m">01</span>-Clean.ipynb
+│<span class="w">   </span>└──<span class="w"> </span><span class="m">02</span>-model.ipynb
+├──<span class="w"> </span>Student-22
+│<span class="w">   </span>└──<span class="w"> </span>NasaSoftwareDefection.zip
+...
+└──<span class="w"> </span>Student-35
+<span class="w">    </span>├──<span class="w"> </span><span class="m">01</span><span class="se">\ </span>-<span class="se">\ </span>Cleaning.ipynb
+<span class="w">    </span>└──<span class="w"> </span><span class="m">02</span><span class="se">\ </span>-<span class="se">\ </span>Pipeline.ipynb
+</code></pre></div></td></tr></table></div>
+
+<p>Parse this tree to produce the following dataframe </p>
+<figure>
+<img src="files/df.png" width="90%">
+<figcaption>Result of cleaning NASA submission files.</figcaption>
+</figure>
+
+<p>Where:</p>
+<ul>
+<li>For each student/folder try to determine which file should have been called <code>01-Clean.ipynb</code> and which file should have been called <code>02-Model.ipynb</code>. Use regex or fuzzy matching for this - NOT exact string matching! </li>
+<li>
+<p>Aim for a generic matching as possible, i.e., considers next year's class - who are going to listen to me even less - and have other/more variations. </p>
+</li>
+<li>
+<p>In the generated dataframe:</p>
+<ul>
+<li>Columns <code>clean</code> and <code>model</code> store matched filename or, if unmatched store empty string.</li>
+<li>Column <code>message</code> stores one of the following values (conditions tested in given order):<ul>
+<li><code>ARCHIVE</code> if an archive (bz2, gz, rar, zip, 7z) was uploaded.</li>
+<li><code>OK</code> if the two uploaded files names matched given specification (including case), or uploaded files have been identified.</li>
+<li><code>UNKNOWN</code> if there is a file that cannot be assigned.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+		
+		<ul class="pager">
+			
+			<li class="previous disabled"><a>&larr; Previous</a></li>
+			
+			
+			
+			<li class="next disabled"><a>Next &rarr;</a></li>
+			
+		</ul>
+
+	</div>
+	
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="../../../style/bootstrap/js/bootstrap.min.js"></script>
+	
+  </body>
+</html>

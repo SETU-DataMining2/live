@@ -82,24 +82,16 @@
 									<ul class="dropdown-menu" role="menu">
 										<li class="dropdown-header">Resources</li>
 										
-										<li >
-											<a href="../../../topics/01-Module_Introduction/index.html#01-Module_Overview">Module Overview</a>
-										</li>
-										
 										<li class="active">
-											<a href="../../../topics/01-Module_Introduction/index.html#21-Practical_01_-_Review_of_Pandas_-_Drug_Consumption">Practical 01 - Review of Pandas - Drug Consumption</a>
+											<a href="../../../topics/21-Assignments/index.html#01-Exam_Viewer">Exam Viewer</a>
 										</li>
 										
 										<li >
-											<a href="../../../topics/01-Module_Introduction/index.html#22-Review_of_Pandas_-_Feedback">Review of Pandas - Feedback</a>
+											<a href="../../../topics/21-Assignments/index.html#02-Kaggle_Competition">Kaggle Competition</a>
 										</li>
 										
 										<li >
-											<a href="../../../topics/01-Module_Introduction/index.html#23-Practical_02_-_Review_of_Pandas_-_German_Credit">Practical 02 - Review of Pandas - German Credit</a>
-										</li>
-										
-										<li >
-											<a href="../../../topics/01-Module_Introduction/index.html#31-Top_X_pandas_commands">Top X pandas commands</a>
+											<a href="../../../topics/21-Assignments/index.html#03-TOD">TOD</a>
 										</li>
 										
 									</ul>
@@ -122,6 +114,10 @@
 											<a href="00-Outline.html">Outline</a>
 										</li>
 										
+										<li >
+											<a href="01-Rubric.html">Rubric</a>
+										</li>
+										
 									</ul>
 								</li>
 							</ul>
@@ -142,42 +138,59 @@
 			
 			
 			
-			<li class="next disabled"><a>Next &rarr;</a></li>
+			<li class="next"><a href="01-Rubric.html">Next (Rubric) &rarr;</a></li>
 			
 		</ul>
 		
-		<h1>Review of Pandas - Drug_Consumption</h1>
-<p>To start this module we have a quiz-based practical to review your pandas skills using a dataset that you may have analysed in your third assignment in Data Mining 1 with Bernard last semester.</p>
-<p>Also for the purpose of this practical we will assume that:</p>
+		<h1>CA1 - Exam Viewer</h1>
+<h2>Aim of Assignment</h2>
+<p>Develop a StudyClix-like website to help students prepare for Discrete Mathematics exams. Ideally the website/dashboard should:</p>
 <ul>
-<li>The only legal drugs are  <code>Alcohol</code>,  <code>Caffeine</code>, <code>Chocolate</code>, and  <code>Nicotine</code>; so all others are classified as illegal.</li>
-<li>A <strong>non-drug user</strong> is one who has never used a drug; so has label <code>CL0</code>.</li>
-<li>A <strong>recent user</strong> is one who used a drug within the last year; so
- has label <code>CL3</code>, <code>CL4</code>, <code>CL5</code>, or <code>CL6</code>. 
- Otherwise they have label <code>CL0</code> (for never used) or <code>CL1</code> or <code>CL2</code> for used over a decade ago and for used over a year ago respectively.</li>
+<li>
+<p>Allow viewing/searching of multiple exam papers.</p>
+</li>
+<li>
+<p>Filter by topic, by keyword, by difficulty, by ...</p>
+<ul>
+<li>Shows each of the questions that matches the selection criteria and any other helpful information.</li>
 </ul>
-<p>To start open a blank notebook and enter code</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+</li>
+</ul>
+<p>The following are screenshots of my attempt at this, to help give you context. Your job is not to just reproduce what I did but take the idea and see how far you can push it. </p>
+<figure>
+ <img src="files/intro.png" width="80%" alt="Example landing page Image">
+ <figcaption>Possible structure of exam viewer dashboard.</figcaption>
+</figure>
 
-<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="s2">&quot;https://setu-datamining2.github.io/live/files/ICPSR_36536.pkl&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</code></pre></div></td></tr></table></div>
+<figure>
+ <img src="files/filter_by_topic.png" width="80%" alt="Example of filtering by topic">
+ <figcaption>Possible filtering by topic.</figcaption>
+</figure>
 
-<p>You should see a cleaned version of the Drug Consumption dataset.<br />
-Now attempt the following quiz</p>
+<figure>
+ <img src="files/filter_by_keyword.png" width="80%" alt="Example of filtering by keyword">
+ <figcaption>Possible filtering by keyword.</figcaption>
+</figure>
+
+<h2>Implementation</h2>
+<p>In contrast to other assignments I want to give you maximum freedom to decide how carry out this implementation.  </p>
+<p>At a minimum you need some way to generate a dashboard and parse PDFs. For these two subtasks, I used the following but feel free to use alternatives:</p>
+<ul>
+<li>
+<p>Website is a dashboard based on <a href="https://streamlit.io/">streamlit</a> but other options are 
+<a href="https://github.com/gradio-app/gradio">gradio</a>, or <a href="https://nicegui.io/">niceGUI</a>.</p>
+</li>
+<li>
+<p>Parsing of PDF documents using <a href="https://github.com/pymupdf/PyMuPDF">pymupdf</a>. There are many other python based PDF parsers so you might find a more suitable option.</p>
+</li>
+</ul>
+<p>I'm intentionally leaving awful lot out &mdash; such as how to preprocess exams papers  &mdash; this is all up to you.</p>
+<h2>Deliverable</h2>
+<p>This assignment will be managed using github (instead of Moodle) so I can see weekly progress.</p>
+<p>Draft rubric for grading is given <a href="01-Rubric.html">here</a>.</p>
 <div class="pager">
-<a class="btn btn-primary btn-lg" href="https://moodle.setu.ie/mod/quiz/view.php?id=4691905" role="button">Moodle Quiz</a>
+<a class="btn btn-primary btn-lg" href="https://moodle.setu.ie/course/section.php?id=7477225" role="button">Moodle Page for Assignment</a>
 </div>
-
-<h2>Solution</h2>
-<p>The setup and solution to the first 9 questions are available <a href="Quiz_Solution_-_Drug_Consumption.pdf">here</a>.</p>
 		
 		<ul class="pager">
 			
@@ -185,7 +198,7 @@ Now attempt the following quiz</p>
 			
 			
 			
-			<li class="next disabled"><a>Next &rarr;</a></li>
+			<li class="next"><a href="01-Rubric.html">Next (Rubric) &rarr;</a></li>
 			
 		</ul>
 

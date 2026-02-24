@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Data Mining 2</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../../style/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../../../style/codehilite/css/default.css" rel="stylesheet">
+    <link href="../../../style/misc/css/module.css" rel="stylesheet">
+    <link href="../../../style/misc/css/practical.css" rel="stylesheet">
+
+	<script type="text/javascript"
+	  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script>
+
+  </head>
+
+<body>
+
+	<!-- Fixed navbar -->
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			
+			
+	    	<div class="collapse navbar-collapse">
+
+				<ul class="nav navbar-nav navbar-left">
+					<!-- Moodle -->
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="https://moodle.setu.ie/course/view.php?id=217322" target="_blank"><img height="18pt" src="../../../style/misc/img/moodle_logo_on_blue.gif" /></a>
+						</div>						
+					</li>
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="https://datamining2202425.slack.com" target="_blank"><img height="15pt" src="../../../style/misc/img/slack_logo.png" /></a>
+						</div>						
+					</li>
+				</ul>
+
+	      		<ul class="nav navbar-nav navbar-right">
+
+					<!-- module home -->
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="../../../index.html"><span class="glyphicon glyphicon-home"></span></a>
+						</div>						
+					</li>
+					
+					<!-- topics -->
+	        		<li>
+						<div class="navbar-collapse collapse" id="b">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-list-alt"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li class="dropdown-header">Topics</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li>
+
+					<!-- resources -->
+	        		<li>
+						<div class="navbar-collapse collapse" id="b">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-th-list"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li class="dropdown-header">Resources</li>
+										
+										<li >
+											<a href="../../../topics/02-Feature_Engineering/index.html#01-German_Credit_-_Feedback">German Credit - Feedback</a>
+										</li>
+										
+										<li >
+											<a href="../../../topics/02-Feature_Engineering/index.html#03-Introduction_to_Feature_Engineering">Introduction to Feature Engineering</a>
+										</li>
+										
+										<li >
+											<a href="../../../topics/02-Feature_Engineering/index.html#04-Feature_Selection">Feature Selection</a>
+										</li>
+										
+										<li >
+											<a href="../../../topics/02-Feature_Engineering/index.html#05-Automatic_Feature_Engineering">Automatic Feature Engineering</a>
+										</li>
+										
+										<li >
+											<a href="../../../topics/02-Feature_Engineering/index.html#07-Dimensional_Reduction">Dimensional Reduction</a>
+										</li>
+										
+										<li >
+											<a href="../../../topics/02-Feature_Engineering/index.html#21-Practical_02_-_Churn_-_Baseline_Model">Practical 02 - Churn - Baseline Model</a>
+										</li>
+										
+										<li class="active">
+											<a href="../../../topics/02-Feature_Engineering/index.html#22-Practical_03_-_Churn_-_Feature_Engineering">Practical 03 - Churn - Feature Engineering</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li>
+								
+					<!-- pages-->
+	        		<li>
+						<div class="navbar-collapse collapse" id="c">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span>Outline</span
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										
+										<li class="active">
+											<a href="00-Outline.html">Outline</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li> 
+					
+	        	</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- contents -->
+	<div class="container">
+		
+		<ul class="pager">
+			
+			<li class="previous disabled"><a>&larr; Previous</a></li>
+			
+			
+			
+			<li class="next disabled"><a>Next &rarr;</a></li>
+			
+		</ul>
+		
+		<h1>Practical 03 &mdash; Churn &mdash; Feature Engineering</h1>
+<p>In this practical we will try to keep everything else fixed and focus on one single aspect of the data mining pipeline &mdash; feature engineering, or more specifically feature extraction and feature selection. (Yes, I'm aware of the inconsistently between "single" and the use of "and". :-/)  </p>
+<p>Your starting point is the notebooks</p>
+<ul>
+<li><a href="./files/US_Churn-01-Import.ipynb">US_Churn-01-Import.ipynb</a></li>
+<li><a href="./files/US_Churn-02-EDA.ipynb">US_Churn-02-EDA.ipynb</a></li>
+<li><a href="./files/US_Churn-03-Baseline_Model.ipynb">US_Churn-03-Baseline_Model.ipynb</a> </li>
+<li><a href="./files/US_Churn-04-Feature_Engineering.ipynb">US_Churn-04-Feature_Engineering.ipynb</a> </li>
+</ul>
+<p>Your job this week is to create new features to <strong>see if it is possible</strong> to find features to better explain the target and hopefully result in a better score (as defined in the notebook).</p>
+<p alert="alert" class="alert-warning">To keep this exercise as realistic as possible I'm not going to tell you which features will be of benefit, nor how much (if any) the chosen metric can be improved. My role is to answer questions re constructing specific features (even if I know that the resulting feature will be of no use).</p>
+<p>Suggestions:</p>
+<ul>
+<li>
+<p>Best strategy is to develop multiple features using multiple lines of attack &mdash; features that might seem plausible might not be of benefit when applied to the data.</p>
+</li>
+<li>
+<p>Adding features related to <strong>State</strong> appears to be a good idea but will take more effort &mdash; always think of effort vs reward.</p>
+</li>
+<li>
+<p>I'm not saying that such features will improve the score. This is for you to determine.</p>
+</li>
+<li>
+<p><strong>So don't get tunnel-vision and unnecessarily limit your options.</strong></p>
+</li>
+</ul>
+<h2>Grading</h2>
+<p>I do not want influence your feature engineering by giving too much detail of the grading, but the grade will be based on:</p>
+<ul>
+<li>Number of features that pass the automatic feature selection algorithm <a href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.RFECV.html">RFECV</a>.</li>
+<li>Improvement on the baseline models (relative to rest of class).</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">Model</span> <span class="n">LR</span>
+    <span class="n">CV</span> <span class="n">scores</span><span class="p">:</span> <span class="mf">0.89</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">0.83</span><span class="p">,</span> <span class="mf">0.84</span><span class="p">,</span> <span class="mf">0.86</span><span class="p">,</span> <span class="mf">0.86</span><span class="p">,</span> <span class="mf">0.87</span><span class="p">,</span> <span class="mf">0.84</span><span class="p">,</span> <span class="mf">0.86</span><span class="p">,</span> <span class="mf">0.87</span>
+    <span class="n">mean</span><span class="o">=</span><span class="mf">86.04</span><span class="o">%</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.0169</span>
+
+<span class="n">Model</span> <span class="n">DT</span>
+    <span class="n">CV</span> <span class="n">scores</span><span class="p">:</span> <span class="mf">0.92</span><span class="p">,</span> <span class="mf">0.92</span><span class="p">,</span> <span class="mf">0.89</span><span class="p">,</span> <span class="mf">0.91</span><span class="p">,</span> <span class="mf">0.94</span><span class="p">,</span> <span class="mf">0.92</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.92</span><span class="p">,</span> <span class="mf">0.92</span><span class="p">,</span> <span class="mf">0.92</span>
+    <span class="n">mean</span><span class="o">=</span><span class="mf">91.30</span><span class="o">%</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.0132</span>
+
+<span class="n">Model</span> <span class="n">DT</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">CV</span> <span class="n">scores</span><span class="p">:</span> <span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.89</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.91</span><span class="p">,</span> <span class="mf">0.91</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.89</span><span class="p">,</span> <span class="mf">0.87</span><span class="p">,</span> <span class="mf">0.91</span><span class="p">,</span> <span class="mf">0.91</span>
+    <span class="n">mean</span><span class="o">=</span><span class="mf">89.70</span><span class="o">%</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.0122</span>
+
+<span class="n">Model</span> <span class="n">KNN</span>
+    <span class="n">CV</span> <span class="n">scores</span><span class="p">:</span> <span class="mf">0.89</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">0.84</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.91</span><span class="p">,</span> <span class="mf">0.89</span><span class="p">,</span> <span class="mf">0.86</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.88</span>
+    <span class="n">mean</span><span class="o">=</span><span class="mf">88.19</span><span class="o">%</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.0173</span>
+
+<span class="n">Model</span> <span class="n">SVC</span>
+    <span class="n">CV</span> <span class="n">scores</span><span class="p">:</span> <span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.89</span><span class="p">,</span> <span class="mf">0.92</span><span class="p">,</span> <span class="mf">0.93</span><span class="p">,</span> <span class="mf">0.91</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">0.92</span><span class="p">,</span> <span class="mf">0.91</span>
+    <span class="n">mean</span><span class="o">=</span><span class="mf">90.45</span><span class="o">%</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.0145</span>
+
+<span class="n">Best</span> <span class="n">Performing</span> <span class="n">Model</span> <span class="n">DT</span> <span class="k">with</span> <span class="p">(</span><span class="n">mean</span> <span class="n">CV</span> <span class="n">of</span><span class="p">)</span> <span class="n">accuracy</span> <span class="o">=</span> <span class="mf">91.30</span><span class="o">%</span>
+</code></pre></div></td></tr></table></div>
+
+<h2>Submission</h2>
+<p>Upload to Moodle zip archive created by code at end of 
+<a href="./files/US_Churn-04-Feature_Engineering.ipynb">US_Churn-04-Feature_Engineering.ipynb</a> </p>
+<div>
+<a name="Quiz"></a></p>
+<div class="pager">
+<a class="btn btn-primary btn-lg" href="https://moodle.setu.ie/mod/assign/view.php?id=4720241" role="button">Moodle</a>
+</div>
+		
+		<ul class="pager">
+			
+			<li class="previous disabled"><a>&larr; Previous</a></li>
+			
+			
+			
+			<li class="next disabled"><a>Next &rarr;</a></li>
+			
+		</ul>
+
+	</div>
+	
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="../../../style/bootstrap/js/bootstrap.min.js"></script>
+	
+  </body>
+</html>

@@ -170,8 +170,8 @@
 <span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">base_estimator</span> <span class="o">=</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="n">ada_clf</span> <span class="o">=</span> <span class="n">AdaBoostClassifier</span><span class="p">(</span>
-    <span class="n">base_estimator</span><span class="o">=</span><span class="n">base_estimator</span><span class="p">,</span> 
-    <span class="n">n_estimators</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;SAMME.R&quot;</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">SEED</span><span class="p">)</span>
+    <span class="n">estimator</span><span class="o">=</span><span class="n">base_estimator</span><span class="p">,</span> 
+    <span class="n">n_estimators</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">SEED</span><span class="p">)</span>
 
 <span class="n">ada_clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -219,8 +219,8 @@
 <span class="k">for</span> <span class="n">depth</span> <span class="ow">in</span> <span class="n">depths</span><span class="p">:</span>
     <span class="n">base_estimator</span> <span class="o">=</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="n">depth</span><span class="p">)</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">AdaBoostClassifier</span><span class="p">(</span>
-        <span class="n">base_estimator</span><span class="o">=</span><span class="n">base_estimator</span><span class="p">,</span> 
-        <span class="n">n_estimators</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;SAMME.R&quot;</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">SEED</span><span class="p">)</span>
+        <span class="n">estimator</span><span class="o">=</span><span class="n">base_estimator</span><span class="p">,</span> 
+        <span class="n">n_estimators</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">SEED</span><span class="p">)</span>
     <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
     <span class="n">models</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Data Mining 2</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../../style/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../../../style/codehilite/css/default.css" rel="stylesheet">
+    <link href="../../../style/misc/css/module.css" rel="stylesheet">
+    <link href="../../../style/misc/css/practical.css" rel="stylesheet">
+
+	<script type="text/javascript"
+	  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script>
+
+  </head>
+
+<body>
+
+	<!-- Fixed navbar -->
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			
+			
+	    	<div class="collapse navbar-collapse">
+
+				<ul class="nav navbar-nav navbar-left">
+					<!-- Moodle -->
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="https://moodle.setu.ie/course/view.php?id=217322" target="_blank"><img height="18pt" src="../../../style/misc/img/moodle_logo_on_blue.gif" /></a>
+						</div>						
+					</li>
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="https://datamining2202425.slack.com" target="_blank"><img height="15pt" src="../../../style/misc/img/slack_logo.png" /></a>
+						</div>						
+					</li>
+				</ul>
+
+	      		<ul class="nav navbar-nav navbar-right">
+
+					<!-- module home -->
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="../../../index.html"><span class="glyphicon glyphicon-home"></span></a>
+						</div>						
+					</li>
+					
+					<!-- topics -->
+	        		<li>
+						<div class="navbar-collapse collapse" id="b">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-list-alt"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li class="dropdown-header">Topics</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li>
+
+					<!-- resources -->
+	        		<li>
+						<div class="navbar-collapse collapse" id="b">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-th-list"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li class="dropdown-header">Resources</li>
+										
+										<li >
+											<a href="../../../topics/08-eXplainable_AI/index.html#01-eXplainable_AI">eXplainable AI</a>
+										</li>
+										
+										<li class="active">
+											<a href="../../../topics/08-eXplainable_AI/index.html#21-Practical_-_xAI_with_RF">Practical - xAI with RF</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li>
+								
+					<!-- pages-->
+	        		<li>
+						<div class="navbar-collapse collapse" id="c">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span>PFI</span
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										
+										<li >
+											<a href="00-Outline.html">Outline</a>
+										</li>
+										
+										<li >
+											<a href="01-Model_Building.html">Model Building</a>
+										</li>
+										
+										<li class="active">
+											<a href="02-PFI.html">PFI</a>
+										</li>
+										
+										<li >
+											<a href="03-LIME.html">LIME</a>
+										</li>
+										
+										<li >
+											<a href="04-SHAP.html">SHAP</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li> 
+					
+	        	</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- contents -->
+	<div class="container">
+		
+		<ul class="pager">
+			
+			<li class="previous"><a href="01-Model_Building.html">&larr; Previous (Model Building)</a></li>
+			
+			
+			
+			<li class="next"><a href="03-LIME.html">Next (LIME) &rarr;</a></li>
+			
+		</ul>
+		
+		<h1>Permutation Feature Importance (PFI)</h1>
+<h2>Outline</h2>
+<p>Permutation Feature Importance is a:</p>
+<ul>
+<li><em>model-agnostic</em> &mdash; it is not restricted to a certain model type, and </li>
+<li><em>global</em> &mdash; it only provides explanations for a full dataset, but not for individual samples.</li>
+</ul>
+<p>Permutation Feature Importance was introduced in 2001 by Breiman et al. for Random Forest models and extended to a model-agnostic version in 2018 by Fischer et al.</p>
+<h2>Process</h2>
+<p>Permutation Feature Importance is applied as follows:</p>
+<ol>
+<li>
+<p>Build a model to predict outputs and computes a performance measure for the dataset. </p>
+<ul>
+<li>This will serve as baseline performance.</li>
+<li>This model should be well preforming since  feature importance is based on the model.</li>
+</ul>
+</li>
+<li>
+<p>Loop over each feature  (potentially repeated multiple times):</p>
+<ol>
+<li>
+<p>Permute the features value across the dataset, essentially messing up any connection between the label and this feature.</p>
+</li>
+<li>
+<p>Predict outputs and compute the performance measure based on the dataset with the permuted feature.</p>
+</li>
+<li>
+<p>Compare the performance measure with the baseline performance.</p>
+</li>
+<li>
+<p>Use the difference between baseline performance and permuted performance as an indicator of the importance of the feature.</p>
+</li>
+<li>
+<p>If both performances are similar, the permuted feature did not lead to a decrease in model performance, indicating that the model did not rely heavily on the feature, hence assigning low importance. On the other hand, if the performance of the data with the permuted feature is much worse than the baseline performance, this shows that the model highly depended on the feature to produce good scores. </p>
+</li>
+</ol>
+</li>
+</ol>
+		
+		<ul class="pager">
+			
+			<li class="previous"><a href="01-Model_Building.html">&larr; Previous (Model Building)</a></li>
+			
+			
+			
+			<li class="next"><a href="03-LIME.html">Next (LIME) &rarr;</a></li>
+			
+		</ul>
+
+	</div>
+	
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="../../../style/bootstrap/js/bootstrap.min.js"></script>
+	
+  </body>
+</html>

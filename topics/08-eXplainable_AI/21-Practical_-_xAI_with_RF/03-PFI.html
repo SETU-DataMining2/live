@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Data Mining 2</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../../style/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../../../style/codehilite/css/default.css" rel="stylesheet">
+    <link href="../../../style/misc/css/module.css" rel="stylesheet">
+    <link href="../../../style/misc/css/practical.css" rel="stylesheet">
+
+	<script type="text/javascript"
+	  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script>
+
+  </head>
+
+<body>
+
+	<!-- Fixed navbar -->
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			
+			
+	    	<div class="collapse navbar-collapse">
+
+				<ul class="nav navbar-nav navbar-left">
+					<!-- Moodle -->
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="https://moodle.setu.ie/course/view.php?id=217322" target="_blank"><img height="18pt" src="../../../style/misc/img/moodle_logo_on_blue.gif" /></a>
+						</div>						
+					</li>
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="https://datamining2202425.slack.com" target="_blank"><img height="15pt" src="../../../style/misc/img/slack_logo.png" /></a>
+						</div>						
+					</li>
+				</ul>
+
+	      		<ul class="nav navbar-nav navbar-right">
+
+					<!-- module home -->
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="../../../index.html"><span class="glyphicon glyphicon-home"></span></a>
+						</div>						
+					</li>
+					
+					<!-- topics -->
+	        		<li>
+						<div class="navbar-collapse collapse" id="b">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-list-alt"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li class="dropdown-header">Topics</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li>
+
+					<!-- resources -->
+	        		<li>
+						<div class="navbar-collapse collapse" id="b">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-th-list"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li class="dropdown-header">Resources</li>
+										
+										<li >
+											<a href="../../../topics/08-eXplainable_AI/index.html#01-eXplainable_AI">eXplainable AI</a>
+										</li>
+										
+										<li class="active">
+											<a href="../../../topics/08-eXplainable_AI/index.html#21-Practical_-_xAI_with_RF">Practical - xAI with RF</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li>
+								
+					<!-- pages-->
+	        		<li>
+						<div class="navbar-collapse collapse" id="c">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span>PFI</span
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										
+										<li >
+											<a href="00-Outline.html">Outline</a>
+										</li>
+										
+										<li >
+											<a href="01-Setup.html">Setup</a>
+										</li>
+										
+										<li >
+											<a href="02-Model_Building.html">Model Building</a>
+										</li>
+										
+										<li class="active">
+											<a href="03-PFI.html">PFI</a>
+										</li>
+										
+										<li >
+											<a href="04-LIME.html">LIME</a>
+										</li>
+										
+										<li >
+											<a href="05-SHAP.html">SHAP</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li> 
+					
+	        	</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- contents -->
+	<div class="container">
+		
+		<ul class="pager">
+			
+			<li class="previous"><a href="02-Model_Building.html">&larr; Previous (Model Building)</a></li>
+			
+			
+			
+			<li class="next"><a href="04-LIME.html">Next (LIME) &rarr;</a></li>
+			
+		</ul>
+		
+		<h1>Permutation Feature Importance (PFI)</h1>
+<h2>Introduction</h2>
+<p>Permutation Feature Importance (PFI) is a:</p>
+<ul>
+<li><em>model-agnostic</em> &mdash; it is not restricted to a certain model type, and </li>
+<li><em>global</em> &mdash; it only provides explanations for a full dataset, but not for individual samples.</li>
+</ul>
+<p>Permutation Feature Importance was introduced in 2001 by Breiman et al. for Random Forest models and extended to a model-agnostic version in 2018 by Fischer et al.</p>
+<h2>Algorithm</h2>
+<p>Permutation Feature Importance is applied as follows:</p>
+<ol>
+<li>
+<p>Build a model, with features that are independent, to predict outputs and computes a performance measure for the dataset. </p>
+<ul>
+<li>This will serve as baseline performance.</li>
+<li>This model should be well preforming since  feature importance is based on the model.</li>
+</ul>
+</li>
+<li>
+<p>Loop over each feature  (potentially repeated multiple times):</p>
+<ol>
+<li>
+<p>Permute the features value across the dataset, essentially messing up any connection between the label and this feature.</p>
+</li>
+<li>
+<p>Predict outputs and compute the performance measure based on the dataset with the permuted feature.</p>
+</li>
+<li>
+<p>Compare the performance measure with the baseline performance.</p>
+</li>
+<li>
+<p>Use the difference between baseline performance and permuted performance as an indicator of the importance of the feature.</p>
+</li>
+<li>
+<p>If both performances are similar, the permuted feature did not lead to a decrease in model performance, indicating that the model did not rely heavily on the feature, hence assigning low importance. On the other hand, if the performance of the data with the permuted feature is much worse than the baseline performance, this shows that the model highly depended on the feature to produce good scores.</p>
+</li>
+</ol>
+</li>
+</ol>
+<h2>Usage</h2>
+<p>Add level 2 heading "Permutation Feature Importance (PFI)" and insert code</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_scorer</span><span class="p">,</span> <span class="n">balanced_accuracy_score</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.inspection</span><span class="w"> </span><span class="kn">import</span> <span class="n">permutation_importance</span>
+</code></pre></div></td></tr></table></div>
+
+<p>Next we load the model built using all of the features </p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;models/model_rf_baseline.pickle&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+    <span class="n">data_and_model</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">model</span> <span class="o">=</span> <span class="n">data_and_model</span>
+<span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_test</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>Verify (again, because we are paranoid) that the model is performing well:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Train (balanced accuracy): </span><span class="si">{</span><span class="n">balanced_accuracy_score</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">))</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test  (balanced accuracy): </span><span class="si">{</span><span class="n">balanced_accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">))</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>If all is good and we are getting 100% and 95%, then our model performs well on the training set and also generalizes well to the independent test set.</p>
+<p>This is a <strong>big deal</strong> since we are going to use this model to do our explainability analysis, so if the model is not performing well, then the explainability analysis will not be very useful.</p>
+<p>Now, let's use Permutation Feature Importance to get insights into the Random Forest Classification model we loaded above. We can use the scikit-learn implementation called permutation_importance to get the importance values for the features in our model. For measuring the performance drop when permuting a feature, we use the standard metric of our trained model, which is, in our case, the accuracy score. Using the same score enables us to evaluate the performance drop in relation to the baseline performance. We do 40 repetitions of permutation for each feature to get more reliable results:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">scorer</span> <span class="o">=</span> <span class="n">get_scorer</span><span class="p">(</span><span class="s2">&quot;accuracy&quot;</span><span class="p">)</span>
+
+<span class="n">explanation_train</span> <span class="o">=</span> <span class="n">permutation_importance</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">,</span>
+    <span class="n">X</span><span class="o">=</span><span class="n">X_train</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">y_train</span><span class="p">,</span>
+    <span class="n">n_repeats</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="n">SEED</span><span class="p">,</span>
+    <span class="n">scoring</span><span class="o">=</span><span class="n">scorer</span>
+<span class="p">)</span>
+
+<span class="n">explanation_train</span><span class="p">[</span><span class="s2">&quot;feature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">columns</span>
+</code></pre></div></td></tr></table></div>
+
+<p>We now plot bar histograms to visualize the importance of each feature, computed as the mean across the 40 permutation repetitions.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Permutation Feature Importance on Training Data for Breast Cancer Model&quot;</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot_permutation_feature_importance</span><span class="p">(</span><span class="n">explanation_train</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>So now, let's interpret the results:</p>
+<ul>
+<li>For each feature we have a box plot showing the distribution of importance values across the 40 repetitions of permutation. The mean importance value is indicated by a red dot, and the median importance value is indicated by a blue line. The features are sorted by their mean importance values, with the most important feature at the top.</li>
+<li>Features with the largest importance score are the ones whose score is most decreased when the feature is permuted, indicating high relevance for the prediction of the target. For our Breast Cancer model, the <code>worst_concave_points</code> feature seems to have the highest impact on the model performance. Permuting this feature leads to a decrease in accuracy of ~0.7%. When comparing it to the baseline accuracy of 100%, we notice that permuting the <code>worst_concave_points</code> feature has almost no effect on the model accuracy. </li>
+<li><strong>The plot above suggest that none of the features are important, which however is in contradiction with the high training accuracy computed as baseline: some feature must be important.</strong></li>
+</ul>
+<p><strong>Q</strong> What has gone wrong?</p>
+<p><strong>A</strong> Permutation feature importance assumes feature independence. High correlation among features breaks this assumption and hence, can have an impact on the feature importance analysis.</p>
+<p>So let's check our second model where we insured that features are independent </p>
+<ul>
+<li>Load the second model <code>model_rf_selection</code> and generate the permutation feature importance explanation for this model, and resulting plot using <code>plot_permutation_feature_importance</code>. you should get the following</li>
+</ul>
+<p><img src="files/fi_1.png" width="75%"></p>
+<p>The plots above show how much influence feature correlation has on the permutation feature importances. For the model trained on the selected feature set, the most important feature leads to a mean decrease in accuracy of ~30%, which is in concordance with the observed model accuracy. In addition, the feature importance has a much higher stability as the variance of the feature importances across different permutations is much smaller. This illustrates why you have to be careful when using Permutation Feature Importance for models that were trained on datasets with high feature correlations!</p>
+<p>We are not restricted to obtaining feature importances of the same data set we used to train the model. Instead, we could use the same approach to identify the most important features in the test set.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">explanation_test</span> <span class="o">=</span> <span class="n">permutation_importance</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">,</span>
+    <span class="n">X</span><span class="o">=</span><span class="n">X_test</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">y_test</span><span class="p">,</span>
+    <span class="n">n_repeats</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+    <span class="n">scoring</span><span class="o">=</span><span class="n">scorer</span><span class="p">)</span>
+
+<span class="n">explanation_test</span><span class="p">[</span><span class="s2">&quot;feature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">columns</span>
+
+<span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Permutation Feature Importance on Train vs Test Data for Breast Cancer Model Model&quot;</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot_permutation_feature_importance_train_vs_test</span><span class="p">(</span>
+    <span class="n">explanation_train</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">explanation_test</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>It seems that for both datasets, largely the same features are identified as important, which is reassuring.</p>
+<p><em>Note:</em> this agreement of important features between training and testing datasets is not guaranteed. In such cases, it is not straightforward to decide on the "truly important" features for the model. A disagreement can be caused by high correlations in the dataset or even be an indicator that the model is not generaliseable.</p>
+		
+		<ul class="pager">
+			
+			<li class="previous"><a href="02-Model_Building.html">&larr; Previous (Model Building)</a></li>
+			
+			
+			
+			<li class="next"><a href="04-LIME.html">Next (LIME) &rarr;</a></li>
+			
+		</ul>
+
+	</div>
+	
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="../../../style/bootstrap/js/bootstrap.min.js"></script>
+	
+  </body>
+</html>

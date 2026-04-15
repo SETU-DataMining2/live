@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Data Mining 2</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../../style/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../../../style/codehilite/css/default.css" rel="stylesheet">
+    <link href="../../../style/misc/css/module.css" rel="stylesheet">
+    <link href="../../../style/misc/css/practical.css" rel="stylesheet">
+
+	<script type="text/javascript"
+	  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script>
+
+  </head>
+
+<body>
+
+	<!-- Fixed navbar -->
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			
+			
+	    	<div class="collapse navbar-collapse">
+
+				<ul class="nav navbar-nav navbar-left">
+					<!-- Moodle -->
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="https://moodle.setu.ie/course/view.php?id=217322" target="_blank"><img height="18pt" src="../../../style/misc/img/moodle_logo_on_blue.gif" /></a>
+						</div>						
+					</li>
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="https://datamining2202425.slack.com" target="_blank"><img height="15pt" src="../../../style/misc/img/slack_logo.png" /></a>
+						</div>						
+					</li>
+				</ul>
+
+	      		<ul class="nav navbar-nav navbar-right">
+
+					<!-- module home -->
+					<li>
+						<div class="navbar-header">
+							<a class="navbar-brand" href="../../../index.html"><span class="glyphicon glyphicon-home"></span></a>
+						</div>						
+					</li>
+					
+					<!-- topics -->
+	        		<li>
+						<div class="navbar-collapse collapse" id="b">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-list-alt"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li class="dropdown-header">Topics</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li>
+
+					<!-- resources -->
+	        		<li>
+						<div class="navbar-collapse collapse" id="b">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-th-list"></span>
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										<li class="dropdown-header">Resources</li>
+										
+										<li >
+											<a href="../../../topics/08-eXplainable_AI/index.html#01-eXplainable_AI">eXplainable AI</a>
+										</li>
+										
+										<li class="active">
+											<a href="../../../topics/08-eXplainable_AI/index.html#21-Practical_-_xAI_with_RF">Practical - xAI with RF</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li>
+								
+					<!-- pages-->
+	        		<li>
+						<div class="navbar-collapse collapse" id="c">
+							<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<span>LIME</span
+									</a>
+									<ul class="dropdown-menu" role="menu">
+										
+										<li >
+											<a href="00-Outline.html">Outline</a>
+										</li>
+										
+										<li >
+											<a href="01-Setup.html">Setup</a>
+										</li>
+										
+										<li >
+											<a href="02-Model_Building.html">Model Building</a>
+										</li>
+										
+										<li >
+											<a href="03-PFI.html">PFI</a>
+										</li>
+										
+										<li class="active">
+											<a href="04-LIME.html">LIME</a>
+										</li>
+										
+										<li >
+											<a href="05-SHAP.html">SHAP</a>
+										</li>
+										
+									</ul>
+								</li>
+							</ul>
+						</div>			
+					</li> 
+					
+	        	</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- contents -->
+	<div class="container">
+		
+		<ul class="pager">
+			
+			<li class="previous"><a href="03-PFI.html">&larr; Previous (PFI)</a></li>
+			
+			
+			
+			<li class="next"><a href="05-SHAP.html">Next (SHAP) &rarr;</a></li>
+			
+		</ul>
+		
+		<h1>Model-Agnostic Interpretation with LIME</h1>
+<h2>Introduction</h2>
+<p>Local Interpretable Model-Agnostic Explanations (LIME) is</p>
+<ul>
+<li><strong>model-agnostic</strong> &amp;mdash it is not restricted to a certain model type, and </li>
+<li><strong>local</strong> &amp;mdash it only provides explanations for individual samples. </li>
+</ul>
+<p>LIME was introduced in 2016 by Rubiero et. al.</p>
+<h2>Algorithm</h2>
+<p>LIME, is an approach that tries to deliver explanations for individual samples. It works by constructing an interpretable __surrogate mode__l (like a linear regression or decision tree model) to approximate predictions of a more complex model in the neighborhood of a given sample.</p>
+<p>It randomly samples data points in the neighbourhood of the sample point and lets the complex model make predictions for those points. This data set is then used to fit a surrogate model which can than be analysed to identify important features.</p>
+<h2>Implementation</h2>
+<p>We start by loading the model built using all of the features:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;models/model_rf_baseline.pickle&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+    <span class="n">data_and_model</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">model</span> <span class="o">=</span> <span class="n">data_and_model</span>
+<span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_test</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>Before applying LIME, we standardize the input features using a <code>StandardScaler</code>. Although the Random Forest model itself does not require scaling, LIME relies on distance-based sampling and weighting when generating local perturbations. Since Euclidean distance is sensitive to feature scale, unscaled features with larger numeric ranges could dominate the locality definition and distort the explanation.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lime.lime_tabular</span><span class="w"> </span><span class="kn">import</span> <span class="n">LimeTabularExplainer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearRegression</span> 
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>A key parameter in LIME is the <code>kernel_width</code>, which controls how strongly perturbed samples are weighted based on their distance to the instance being explained. Smaller values enforce a more local explanation by giving higher weight to very similar samples, while larger values result in a broader, more global approximation. Choosing an appropriate kernel width is challenging and remains an open research question. It is also one of the main limitations of LIME, as explanations can vary substantially depending on this parameter. Feel free to experiment with different values and observe how the explanations change.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">kernel_width</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># default is 0.75 * sqrt(n_features)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>After scaling, we initialize the <code>LimeTabularExplainer</code>, which uses the scaled training data as the background distribution for generating local perturbations around the instance being explained.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+<span class="n">X_train_scaled</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+
+<span class="n">explainer</span> <span class="o">=</span> <span class="n">LimeTabularExplainer</span><span class="p">(</span>
+    <span class="n">training_data</span><span class="o">=</span><span class="n">X_train_scaled</span><span class="p">,</span>   <span class="c1"># Background data used to generate perturbed samples</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;classification&quot;</span><span class="p">,</span>          <span class="c1"># Specifies task type (&quot;classification&quot; or &quot;regression&quot;)</span>
+    <span class="n">training_labels</span><span class="o">=</span><span class="n">y_train</span><span class="p">,</span>        <span class="c1"># True labels used for class handling</span>
+    <span class="n">feature_names</span><span class="o">=</span><span class="n">X_train</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>  <span class="c1"># Feature names shown in explanations</span>
+    <span class="n">feature_selection</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>       <span class="c1"># Strategy for selecting features in the surrogate model</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="n">SEED</span><span class="p">,</span>              <span class="c1"># Ensures reproducibility of sampling</span>
+    <span class="n">sample_around_instance</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>    <span class="c1"># Generate perturbations around the instance itself instead of global mean (default)</span>
+    <span class="n">kernel_width</span><span class="o">=</span><span class="n">kernel_width</span><span class="p">,</span>      <span class="c1"># Controls locality weighting in the surrogate model</span>
+    <span class="n">discretize_continuous</span><span class="o">=</span><span class="kc">False</span>     <span class="c1"># Whether to discretize continuous features before explanation</span>
+<span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>Once we have defined the setup for LIME, we select an instance of interest for which we want to generate explanations, define the neighborhood size (i.e., the number of perturbed samples used to fit the surrogate model), and choose the type of surrogate model. The neighborhood size should be sufficiently large to ensure that the surrogate model is trained on enough locally perturbed samples. As a surrogate model, we use <strong>Linear Regression</strong>, since its coefficients provide an intrinsically interpretable representation of feature influence in the local region around the instance.</p>
+<p>When using LIME, both the prediction function and the explanation target depend on the learning task:</p>
+<ul>
+<li>
+<p>For <strong>regression</strong>, we pass the model’s <code>predict</code> function, since LIME explains the predicted continuous output directly. No class selection is required because there is only a single numeric prediction.</p>
+</li>
+<li>
+<p>For <strong>classification</strong>, we pass the model’s <code>predict_proba</code> function, as LIME requires class probability scores rather than discrete class labels. In addition, we must specify which class to explain:</p>
+<ul>
+<li><code>top_labels=1</code> explains the predicted class (recommended for understanding the model’s decision).</li>
+<li><code>labels=(instance_label,)</code> explains the <strong>true class</strong> (useful when analyzing misclassifications).</li>
+</ul>
+</li>
+</ul>
+<p>Because we standardized the data before passing it to LIME, the perturbed samples generated by the explainer are also in standardized space. However, the Random Forest model was trained on the original (unscaled) feature values. Therefore, we use scaler.inverse_transform inside the predict_proba function to transform the perturbed samples back to the original feature scale before passing them to the model. This ensures that predictions are computed in the correct feature space and remain consistent with the trained model.</p>
+<p>Pick instance 94 for explanation, which is correctly classified as "1_Cancer" by the model. We will explain the predicted class for this instance, which is the recommended approach for understanding the model's decision.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">inst_idx</span> <span class="o">=</span> <span class="mi">94</span> <span class="c1"># Index of the sample to explain</span>
+
+<span class="n">instance</span> <span class="o">=</span> <span class="n">X_train_scaled</span><span class="p">[</span><span class="n">inst_idx</span><span class="p">]</span>  <span class="c1"># Feature vector of the selected instance</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Instance </span><span class="si">{</span><span class="n">inst_idx</span><span class="si">}</span><span class="s2"> of training data will be explained. The true class is </span><span class="si">{</span><span class="n">y_train</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">inst_idx</span><span class="p">]</span><span class="si">}</span><span class="s2"> and the predicted class for this instance is: </span><span class="si">{</span><span class="n">model_breastcancer</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">scaler</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)))[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+<span class="c1"># number of samples in the neighborhood used to fit the local surrogate model</span>
+<span class="n">num_samples</span> <span class="o">=</span> <span class="mi">5000</span>  <span class="c1"># Size of perturbed neighborhood generated around the instance</span>
+
+<span class="n">explanation</span> <span class="o">=</span> <span class="n">explainer</span><span class="o">.</span><span class="n">explain_instance</span><span class="p">(</span>
+    <span class="n">data_row</span><span class="o">=</span><span class="n">instance</span><span class="p">,</span>  <span class="c1"># The instance for which we want an explanation</span>
+    <span class="n">predict_fn</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">model_breastcancer</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">scaler</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span>  <span class="c1"># Function returning class probabilities</span>
+    <span class="n">top_labels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># Explain the class with the highest predicted probability</span>
+    <span class="n">model_regressor</span><span class="o">=</span><span class="n">LinearRegression</span><span class="p">(),</span>  <span class="c1"># Local surrogate model approximating the RF</span>
+    <span class="n">num_samples</span><span class="o">=</span><span class="n">num_samples</span><span class="p">,</span>  <span class="c1"># Number of perturbed samples used to fit the surrogate</span>
+<span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>To assess how well the simpler surrogate model approximates the predictions of the complex model, we need a metric that summarizes the quality of the surrogate’s predictions. This metric serves as a fidelity measure, indicating how reliably the interpretable model represents the behavior of the original model in the local neighborhood.</p>
+<p>While the choice of fidelity metric is flexible, it is essential to evaluate the surrogate model’s predictive performance whenever LIME explanations are used. After all, how much confidence would you place in an explanation generated by a surrogate model that fails to approximate the complex model’s predictions accurately?</p>
+<p>In our case, we use a linear regression model as the surrogate. A commonly used measure of goodness of fit for linear regression is the $R^$ score. It quantifies how well the linear model explains the variation in the complex model’s predictions within the local neighborhood. An $R^$ value close to 1 indicates a strong local approximation, whereas lower values suggest that the surrogate model may not faithfully capture the complex model’s behavior.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Score of the local surrogate model: </span><span class="si">{</span><span class="n">explanation</span><span class="o">.</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>All that LIME did was to fit a linear regression model to approximate the complex model's predictions, i.e., the predictions of the Random Forest model. The dataset for creating the fit consists of the neighborhood samples that were randomly created around our selected instance.</p>
+<p>Linear regression models estimate a single parameter (coefficient) for each feature. Those coefficients describe the mathematical relationship between each feature (independent variable) and the target (dependent variable). The sign of a linear regression coefficient tells you whether there is a positive or negative correlation between the feature and the target. The coefficient value signifies how much the mean of the target changes given a one-unit shift in the feature while holding other features in the model constant. Hence, we can plot the coefficients of the Linear Regression Surrogate model to understand which features are most predictive for our instance of interest.</p>
+<p><em>Note:</em> LIME is not restricted to linear regression models; other easy-to-interpret surrogate models could be used like decision trees.</p>
+<p>Run code </p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">explanation</span><span class="o">.</span><span class="n">as_pyplot_figure</span><span class="p">();</span>
+</code></pre></div></td></tr></table></div>
+
+<p>to generate </p>
+<p><img src="files/lime_1.png" width="75%"></p>
+<p>For this example, we have an instance where the true class is <strong>1_Cancer</strong>, and the Random Forest model also predicts <strong>1_Cancer</strong>, indicating a correct classification.</p>
+<p>The local explanation for class 1 highlights the features that most strongly influenced the model’s decision for this specific patient. Features shown in <strong>green</strong> push the prediction toward class 1 (malignant/cancer), while features shown in <strong>red</strong> push it away from class 1 (toward the benign class). The length of each bar represents the weight assigned by the local linear surrogate model. Larger absolute values indicate stronger influence within the local neighborhood around this instance.</p>
+<p>The strongest positive contributors include <code>worst_perimeter</code>, <code>mean_concave_points</code>, <code>mean_concavity</code>, and <code>worst_area</code>. For this instance, elevated values of these features substantially increase the predicted probability of malignancy, according to the surrogate model.</p>
+<p>Importantly, this explanation is <strong>local</strong>: it describes how the model arrived at its prediction for this particular sample and does not necessarily reflect global feature importance across the dataset.</p>
+		
+		<ul class="pager">
+			
+			<li class="previous"><a href="03-PFI.html">&larr; Previous (PFI)</a></li>
+			
+			
+			
+			<li class="next"><a href="05-SHAP.html">Next (SHAP) &rarr;</a></li>
+			
+		</ul>
+
+	</div>
+	
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="../../../style/bootstrap/js/bootstrap.min.js"></script>
+	
+  </body>
+</html>

@@ -158,12 +158,12 @@
 <h2>Introduction</h2>
 <p>Local Interpretable Model-Agnostic Explanations (LIME) is</p>
 <ul>
-<li><strong>model-agnostic</strong> &amp;mdash it is not restricted to a certain model type, and </li>
-<li><strong>local</strong> &amp;mdash it only provides explanations for individual samples. </li>
+<li><strong>model-agnostic</strong> &mdash; it is not restricted to a certain model type, and </li>
+<li><strong>local</strong> &mdash; it only provides explanations for individual samples. </li>
 </ul>
 <p>LIME was introduced in 2016 by Rubiero et. al.</p>
 <h2>Algorithm</h2>
-<p>LIME, is an approach that tries to deliver explanations for individual samples. It works by constructing an interpretable __surrogate mode__l (like a linear regression or decision tree model) to approximate predictions of a more complex model in the neighborhood of a given sample.</p>
+<p>LIME, is an approach that tries to deliver explanations for individual samples. It works by constructing an interpretable <strong>surrogate model</strong> (like a linear regression or decision tree model) to approximate predictions of a more complex model in the neighborhood of a given sample.</p>
 <p>It randomly samples data points in the neighbourhood of the sample point and lets the complex model make predictions for those points. This data set is then used to fit a surrogate model which can than be analysed to identify important features.</p>
 <h2>Implementation</h2>
 <p>We start by loading the model built using all of the features:</p>

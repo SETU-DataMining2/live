@@ -86,6 +86,10 @@
 											<a href="../../../topics/08-eXplainable_AI/index.html#01-eXplainable_AI">eXplainable AI</a>
 										</li>
 										
+										<li >
+											<a href="../../../topics/08-eXplainable_AI/index.html#02-Fairness_in_AI">Fairness in AI</a>
+										</li>
+										
 										<li class="active">
 											<a href="../../../topics/08-eXplainable_AI/index.html#21-Practical_-_xAI_with_RF">Practical - xAI with RF</a>
 										</li>
@@ -154,7 +158,133 @@
 			
 		</ul>
 		
-		
+		<h1>SHapley Additive exPlanations (SHAP)</h1>
+<h2>Introduction</h2>
+<p>SHapley Additive exPlanations is a model-agnostic method, which means that it is not restricted to a certain model type, and it is a local method which means that it only provides explanations for individual samples. However, the individual explanations can be used to also get global interpretations. SHAP was introduced in 2017 by Lundberg et al.</p>
+<h2>Algorithm</h2>
+<ul>
+<li>The Shapley value itself tells you something about the absolute effect of a feature on the output.</li>
+<li>To get the importance of a feature, all possible combinations of feature subsets with and without the feature of interest are computed.</li>
+<li>Shapley is based only on model prediction and not on performance metrics.</li>
+</ul>
+<h2>Implementation</h2>
+<p>Load the necessary libraries (install using <code>pip install shap</code> if you haven't already):</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">shap</span>
+</code></pre></div></td></tr></table></div>
+
+<p>We start by loading the model built using all of the features:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;models/model_rf_baseline.pickle&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+    <span class="n">data_and_model</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">model</span> <span class="o">=</span> <span class="n">data_and_model</span>
+<span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_test</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>We compute the SHAP values using <code>shap.TreeExplainer</code> which implements the <code>TreeSHAP</code> method. The SHAP values explain why a prediction for a single observation differs from the average prediction for all the observations in the data set.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">explainer</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">TreeExplainer</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
+<span class="c1"># average prediction for the dataset</span>
+<span class="n">pm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Models average prediction for our data set is for class 0: </span><span class="si">{</span><span class="n">pm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">, for class 1: </span><span class="si">{</span><span class="n">pm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Expected value for our data set is for class 0: </span><span class="si">{</span><span class="n">explainer</span><span class="o">.</span><span class="n">expected_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">, for class 1: </span><span class="si">{</span><span class="n">explainer</span><span class="o">.</span><span class="n">expected_value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>As you can notice form the numbers above, the model's average prediction and the SHAP expected value differ for both classes. Why is that the case?</p>
+<p>When using TreeExplainer for a Random Forest model, there will be small variations between the average model prediction and the expected value from SHAP. </p>
+<p>To get the exact same values, we provide a background dataset for integrating out features. This dataset has to be passed to an Independent masker, which correctly subsamples the data (otherwise only the first 100 samples are subsampled and the expected value might show high variations).</p>
+<p>In addition, when using SHAP to explain a classifiers output, the default value in <code>TreeExplainer</code> for <code>model_output="raw"</code>, which explains the raw output of the model. For regression models, "raw" is the standard output. For classification this is the log odds ratio. We can set the model_output="probability" explaining the output of the model transformed into probability space, i.e. SHAP values now sum to the probability output of the model.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">explainer</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">TreeExplainer</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model_breastcancer</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">shap</span><span class="o">.</span><span class="n">maskers</span><span class="o">.</span><span class="n">Independent</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">max_samples</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">)),</span> <span class="n">model_output</span><span class="o">=</span><span class="s2">&quot;probability&quot;</span><span class="p">)</span>
+
+<span class="c1"># average prediction for the dataset</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Models average prediction for our data set isfor class 0: </span><span class="si">{</span><span class="n">pm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">, for class 1: </span><span class="si">{</span><span class="n">pm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;SHAP expected value isfor class 0: </span><span class="si">{</span><span class="n">explainer</span><span class="o">.</span><span class="n">expected_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">, for class 1: </span><span class="si">{</span><span class="n">explainer</span><span class="o">.</span><span class="n">expected_value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>For classification task, shap explainer produces two expected values, corresponding to the average probability for each class</p>
+<p>Now, we can retrieve the SHAP values for our dataset and process them for the visualizations.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">shap_values</span> <span class="o">=</span> <span class="n">explainer</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>Notice that the shapley values matrix is the same size as our input matrix that contains all the feature values for each observation (i.e., each row of the matrix). That means there is one Shapley value for each entry in our feature matrix. Hence, each observation (row) has a Shapley value for each of its features (columns) that explains that feature's contribution to the model's prediction for that observation.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Features matrix - # samples: </span><span class="si">{</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">, # features: </span><span class="si">{</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;SHAP values matrix - # samples: </span><span class="si">{</span><span class="n">shap_values</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">, # features: </span><span class="si">{</span><span class="n">shap_values</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>One major difference when analysing classification models with SHAP, compared to regression models, is that we will get one shapley value matrix and expected value per class. Hence, in our case we will get two SHAP value matrices and expected values because we have two classes in the dataset.</p>
+<p><em>Note: the order of the SHAP value matrices and expected value output is the same as the sorting of the target classes.</em></p>
+<h2>Local Explanations with SHAP</h2>
+<p>The SHAP package provides several visualizations that help us understand how each feature contributes to an individual prediction. Let's look at the prediction for a single observation (row) in our data set.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">observation_of_interest</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;For observation of interest </span><span class="si">{</span><span class="n">observation_of_interest</span><span class="si">}</span><span class="s1"> the target value is </span><span class="si">{</span><span class="n">y_train</span><span class="p">[</span><span class="n">observation_of_interest</span><span class="p">]</span><span class="si">}</span><span class="s1">; and models prediction for the observation of interest: </span><span class="si">{</span><span class="n">model_breastcancer</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)[</span><span class="n">observation_of_interest</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<h3>Force Plot</h3>
+<p>The force plot visualizes each feature's effect on the prediction for our single observation, given the current set of feature values. We have red forces which shift the prediction value () to a higher value and blue forces which shift the prediction value to a lower value. This plots helps to understand which features ("forces") contribute to the difference between the average prediction and the actual prediction of our observation of interest for each class. The features closest the actual prediction value () have the higest impact on the model's prediction. This plot is useful when the number of features is not too high. For an application example on medical data.</p>
+<p><em>Note: The Shapley value can be misinterpreted. The Shapley value of a feature value is not the difference of the predicted value after removing the feature from the model training. The interpretation of the Shapley value is: Given the current set of feature values, the contribution of a feature value to the difference between the actual prediction and the defined baseline is the estimated Shapley value.</em></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">target_class</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">shap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">force</span><span class="p">(</span><span class="n">shap_values</span><span class="p">[</span><span class="n">observation_of_interest</span><span class="p">,</span> <span class="p">:,</span> <span class="n">target_class</span><span class="p">],</span> <span class="n">matplotlib</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p><img src="files/shap_1.png" width="80%"></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># force plot for class 1</span>
+<span class="n">target_class</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">shap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">force</span><span class="p">(</span><span class="n">shap_values</span><span class="p">[</span><span class="n">observation_of_interest</span><span class="p">,</span> <span class="p">:,</span> <span class="n">target_class</span><span class="p">],</span> <span class="n">matplotlib</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p><img src="files/shap_2.png" width="80%"></p>
+<p>We plot one force plot per class (class 0: control, class 1: cancer) for our observation of interest, which is a cancer patient that has been classified as "cancer".</p>
+<p>In the first plot, we get the feature contributions to the predicted probability of belonging to the control class, which is 13% (). The average predicted probability for control class is however 62%. The force plot now indicates which features contribute to the difference between the predicted value of 13% and the expected value of 62%. We can see that the features worst area and worst perimeter are the top contributors to a lower predicted probability, whereas the feature worst texture and mean texture contribute to a higher predicted probability.</p>
+<p>In the second plot we have the same information for the predicted probability of belonging to the cancer class, which is 87% ($f(x)=0.87$). We see that the forces are basically reversed, where the features that contributed most to a lower predicted probability in the first plot now contribute the most to a higher predicted probability in the second plot.</p>
+<p>The SHAP package also provides decision plots, waterfall plots and other plots for visualizing local explanations. For more information on the different plots see <a href="https://shap.readthedocs.io/en/latest/example_notebooks/api_examples/plots/decision_plot.html">here</a>.</p>
+<h2>Global Explanations with SHAP</h2>
+<h3>Global Bar Plots</h3>
+<p>The local explanation plots are great for looking at the model's predictions with granularity. But what if we want a simple summary of how important each feature is in making predictions for the entire data set - something like feature importance?</p>
+<p>The SHAP package covers this case by providing a global feature importance plot, where the global importance of each feature is taken to be the mean absolute SHAP value for that feature over all the given samples. Below we plot the mean absolute SHAP values for class 1.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">target_class</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">shap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">shap_values</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">target_class</span><span class="p">],</span> <span class="n">max_display</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p><img src="files/shap_3.png" width="80%"></p>
+<p>Just to make sure we understand what's happening here. Remember, each row of the dataset is an observation representing a patient, and we have 455 patients. Each column is a feature, and there are 30 features. All we did in the calculation above was to average all the (absolute values of the) 455 SHAP values in each column. That gives us 30 sums, one for each feature, and those are our 30 feature importances for this model (only 20 plotted above). It's that simple.</p>
+<p>Let's pause and consider this for a moment because this is a really important point: the feature importance for the entire model is calculated directly from their importance for individual observations. In other words, the importance is consistent between the model's global and local behavior. This consistency is a remarkable and really important characteristic that many model interpretability methods do not offer.</p>
+<p>The SHAP package also provides local bar plots, bar plots separated by cohorts or ordered by feature clustering. For more information on the different bar plots see <a href="https://shap.readthedocs.io/en/latest/example_notebooks/api_examples/plots/bar.html">here</a>.</p>
+<h3>Beeswarm</h3>
+<p>The SHAP package also provides a more granular look at feature importances for the entire data set. When we want to visualize the SHAP value summary as a beeswarm, we have to do the visualization class-wise again.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">target_class</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">shap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">beeswarm</span><span class="p">(</span><span class="n">shap_values</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">target_class</span><span class="p">],</span> <span class="n">max_display</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">group_remaining_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p><img src="files/shap_4.png" width="80%"></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">target_class</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">shap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">beeswarm</span><span class="p">(</span><span class="n">shap_values</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">target_class</span><span class="p">],</span> <span class="n">max_display</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">group_remaining_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p><img src="files/shap_5.png" width="80%"></p>
+<p>The beeswarm plot is designed to display an information-dense summary of how the top features in a dataset impact the model’s output. Here, the Shapley values of every observation are plotted for each feature. Additionally, the coloring indicates whether low (or high) values of each feature increase (or decrease) the model's predictions. For example, we can see that low value for worst perimeter, worst concave points, worst area and worst radius increases the probability of being predicted as control (i.e., the Shapley values are greater than zero).</p>
+<h2>Dealing with Correlated Features</h2>
 		
 		<ul class="pager">
 			
